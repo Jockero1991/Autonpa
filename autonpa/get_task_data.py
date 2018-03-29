@@ -29,9 +29,12 @@ def test_main(driver):
 
     driver.get('http://jira.it2g.ru/issues/?jql=')
     driver.find_element_by_xpath('//*[@class="filter-link"][@data-id="10753"]').click()
+    sleep(3)
+    #get_data(driver)
 
-def get_data():
-    pass
+def get_data(driver):
+    rows=[]
+    rows = driver.find_elements_by_class_name('issuerow')
 
 def write_data():
     pass
