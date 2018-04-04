@@ -22,21 +22,25 @@ def driver(request):
     return wd
 
 filters_npa = [
- ["10765", # задачи в разработке
- "10766", # задачи в аналитике
- "10769", # задачи в тестировании
- "10767", # закрытые задачи
- "10770", # Открытые баги 
- "10772", # Закрытые баги
- "10773"], # Отложенные задачи
- ['в_разработке.csv', 'в_аналитике.csv', 'в_тестировании.csv', 'закрытые_задачи.csv', 'Открытые_баги.csv', 'закрытые_задачи.csv', 'отложенные задачи.csv']
+[# "10765", # задачи в разработке
+#  "10766", # задачи в аналитике
+#  "10769", # задачи в тестировании
+#  "10767", # закрытые задачи
+# "10770", # Открытые баги 
+ "10772" # Закрытые баги
+# "10773"  # Отложенные задачи
+],
+ [#'в_разработке.csv', 'в_аналитике.csv', 'в_тестировании.csv', 'закрытые_задачи.csv', 'Открытые_баги.csv',
+  'закрытые_баги.csv'
+  #, 'отложенные задачи.csv'
+  ]
  ]
 
 def test_main(driver):
     #login
     driver.get('http://jira.it2g.ru/login.jsp')
-    driver.find_element_by_id('login-form-username').send_keys('')
-    driver.find_element_by_id('login-form-password').send_keys('')
+    driver.find_element_by_id('login-form-username').send_keys('Kovalenkovv@it2g.ru')
+    driver.find_element_by_id('login-form-password').send_keys('Qwerty123')
     driver.find_element_by_id('login-form-submit').click()
 
     driver.get('http://jira.it2g.ru/issues/?jql=')
@@ -48,8 +52,13 @@ def test_main(driver):
 def generate_report(driver, t):
     driver.find_element_by_xpath(f'//*[@class="filter-link"][@data-id="{filters_npa[0][t]}"]').click()
     sleep(2)
+    curr_page_count, all_task_on_page = 0, 0
+    curr_page_count = driver.find_element_by_class_name('results-count-end').text
+    all_tasks = driver.find_element_by_class_name('results-count-total').text
+    table_data = []
     # Добываем данные...
-    table_data = get_data(driver)
+    if curr_page_count < all_tasks:
+        table_data.extend(get_data(driver))
     # Записываем в файл добытые данные...
     write_data(table_data, filters_npa[1][t])
     # Проверяем содержимое файла...
@@ -65,6 +74,7 @@ def get_data(driver):
     qa_assigned = []
     qa = []
     result = []
+
     try:
         types_of_tasks = driver.find_elements_by_class_name('issuetype')
         types_of_tasks = [x.find_element_by_tag_name('img').get_attribute('alt') for x in types_of_tasks]
