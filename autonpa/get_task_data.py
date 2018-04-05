@@ -35,10 +35,14 @@ filters_npa = [
  ]
 
 def test_main(driver):
+    #login_data=[]
+    with open('login_data.txt', 'r') as ld:
+        login_data = ld.readline().split(',')
+        print(login_data)
     #login
     driver.get('http://jira.it2g.ru/login.jsp')
-    driver.find_element_by_id('login-form-username').send_keys('Kovalenkovv@it2g.ru')
-    driver.find_element_by_id('login-form-password').send_keys('Qwerty123')
+    driver.find_element_by_id('login-form-username').send_keys(login_data[0])
+    driver.find_element_by_id('login-form-password').send_keys(login_data[1])
     driver.find_element_by_id('login-form-submit').click()
 
     driver.get('http://jira.it2g.ru/issues/?jql=')
@@ -83,7 +87,7 @@ def get_data(driver):
     summary=[]
     assignee=[]
     assigned = []
-    statuses = []
+    statuses, priority = [], []
     qa_assigned = []
     qa = []
     result = []
@@ -100,6 +104,10 @@ def get_data(driver):
 
         statuses = driver.find_elements_by_class_name('status')
         statuses = [x.find_element_by_tag_name('span').text for x in statuses]
+
+        priority = driver.find_elements_by_class_name('priority')
+        priority = [x.find_element_by_tag_name('img').get_attribute('alt') for x in priority]
+        #print(priority)
     
         assignee = driver.find_elements_by_class_name('assignee')
         qa_assigned = driver.find_elements_by_css_selector('.customfield_10201')
@@ -119,7 +127,7 @@ def get_data(driver):
         temp_str = '' 
 
         for r in range(len(types_of_tasks)):
-            temp_str = f'{task_id[r]}|{types_of_tasks[r]}|{statuses[r]}|{summary[r]}|{assignee[r]}|{qa_assigned[r]}'.split(',')
+            temp_str = f'{task_id[r]}|{types_of_tasks[r]}|{statuses[r]}|{priority[r]}|{summary[r]}|{assignee[r]}|{qa_assigned[r]}'.split(',')
             result.append(temp_str)
         print(result[0])
         return result
@@ -134,7 +142,7 @@ def write_data(data, path, trigger='headers'):
         writer = csv.writer(csv_file, delimiter=',')
 
         if trigger=='headers':
-            writer.writerow('№ в Jira|Тип задачи|Статус|Тема|Исполнитель|Тестировщик'.split(','))
+            writer.writerow('№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик'.split(','))
 
         if trigger == 'data':
             for line in data:
