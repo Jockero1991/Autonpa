@@ -22,17 +22,15 @@ def driver(request):
     return wd
 
 filters_npa = [
-[# "10765", # задачи в разработке
-#  "10766", # задачи в аналитике
-#  "10769", # задачи в тестировании
-#  "10767", # закрытые задачи
-# "10770", # Открытые баги 
- "10772" # Закрытые баги
-# "10773"  # Отложенные задачи
+["10765",  # задачи в разработке
+"10766", # задачи в аналитике
+"10769", # задачи в тестировании
+"10767", # закрытые задачи
+"10770", # Открытые баги 
+"10772", # Закрытые баги
+"10773"  # Отложенные задачи
 ],
- [#'в_разработке.csv', 'в_аналитике.csv', 'в_тестировании.csv', 'закрытые_задачи.csv', 'Открытые_баги.csv',
-  'закрытые_баги.csv'
-  #, 'отложенные задачи.csv'
+ ['в_разработке.csv', 'в_аналитике.csv', 'в_тестировании.csv', 'закрытые_задачи.csv', 'Открытые_баги.csv', 'закрытые_баги.csv', 'отложенные задачи.csv'
   ]
  ]
 
@@ -51,18 +49,33 @@ def test_main(driver):
 
 def generate_report(driver, t):
     driver.find_element_by_xpath(f'//*[@class="filter-link"][@data-id="{filters_npa[0][t]}"]').click()
-    sleep(2)
-    curr_page_count, all_task_on_page = 0, 0
-    curr_page_count = driver.find_element_by_class_name('results-count-end').text
-    all_tasks = driver.find_element_by_class_name('results-count-total').text
+    sleep(4)
+    curr_page_count, all_tasks = 0, 0
     table_data = []
-    # Добываем данные...
-    if curr_page_count < all_tasks:
-        table_data.extend(get_data(driver))
-    # Записываем в файл добытые данные...
-    write_data(table_data, filters_npa[1][t])
+    write_data(table_data, filters_npa[1][t], 'headers')
+    try:
+        all_tasks = driver.find_element_by_class_name('results-count-total').text
+        curr_page_count = driver.find_element_by_class_name('results-count-end').text
+        if int(curr_page_count) < int(all_tasks):
+            while int(curr_page_count) < int(all_tasks):
+                table_data = get_data(driver)
+                # Записываем в файл добытые данные...
+                write_data(table_data, filters_npa[1][t], 'data')
+                #print(table_data[0])
+                driver.execute_script('$(".icon-next").click()')
+                sleep(2)
+                all_tasks = driver.find_element_by_class_name('results-count-total').text
+                curr_page_count = driver.find_element_by_class_name('results-count-end').text
+        if int(curr_page_count) == int(all_tasks):
+            table_data = get_data(driver)
+            # Записываем в файл добытые данные...
+            write_data(table_data, filters_npa[1][t], 'data')
+            #print(table_data[0])
+    except:
+        print('нет счетчика задач, задач тоже нет')
+        
     # Проверяем содержимое файла...
-    read_data(filters_npa[1][t], table_data)
+    #read_data(filters_npa[1][t], table_data)
 
 def get_data(driver):
     types_of_tasks = []
@@ -74,7 +87,7 @@ def get_data(driver):
     qa_assigned = []
     qa = []
     result = []
-
+    print('Функция запустилась!')
     try:
         types_of_tasks = driver.find_elements_by_class_name('issuetype')
         types_of_tasks = [x.find_element_by_tag_name('img').get_attribute('alt') for x in types_of_tasks]
@@ -104,20 +117,28 @@ def get_data(driver):
             assignee[u] = assigned[u]
             qa_assigned[u] = qa[u]
         temp_str = '' 
-  
+
         for r in range(len(types_of_tasks)):
             temp_str = f'{task_id[r]}|{types_of_tasks[r]}|{statuses[r]}|{summary[r]}|{assignee[r]}|{qa_assigned[r]}'.split(',')
             result.append(temp_str)
+        print(result[0])
         return result
     except:
+        print('Задач нет')
         return ''
 
-def write_data(data, path):
-    with open(path, "w", newline='') as csv_file:
+def write_data(data, path, trigger='headers'):
+    # в случае trigger = 'headers' в файл записывается строчка с заголовками столбцов
+    # в случае trigger = 'data' в файл записываются данные с задачами
+    with open(path, "a", newline='') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
-        writer.writerow('№ в Jira|Тип задачи|Статус|Тема|Исполнитель|Тестировщик'.split(','))
-        for line in data:
-            writer.writerow(line)
+
+        if trigger=='headers':
+            writer.writerow('№ в Jira|Тип задачи|Статус|Тема|Исполнитель|Тестировщик'.split(','))
+
+        if trigger == 'data':
+            for line in data:
+                writer.writerow(line)
 
 def read_data(path, assert_data):
     reading_txt=[]
