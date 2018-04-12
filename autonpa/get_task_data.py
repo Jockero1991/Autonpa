@@ -10,6 +10,11 @@ from selenium.webdriver.support.ui import Select
 from time import sleep
 import pytest
 import csv
+from openpyxl import load_workbook as lw
+from openpyxl import Workbook
+from openpyxl.compat import range
+from openpyxl.utils import get_column_letter
+#from test_pyxl_lib import test_pyxl
 
 @pytest.fixture
 def driver(request):
@@ -25,13 +30,16 @@ filters_npa = [
 [#"10765",  # задачи в разработке
 #"10766", # задачи в аналитике
 "10769", # задачи в тестировании
-#"10767", # закрытые задачи
+"10767"#,  закрытые задачи
 #"10770", # Открытые баги 
 #"10772", # Закрытые баги
 #"10773"  # Отложенные задачи
 ],
  [#'в_разработке.csv', 'в_аналитике.csv', 
- 'в_тестировании.csv'#, 'закрытые_задачи.csv', 'Открытые_баги.csv', 'закрытые_баги.csv', 'отложенные задачи.csv'
+ 'в_тестировании.csv', 'закрытые_задачи.csv'#, 'Открытые_баги.csv', 'закрытые_баги.csv', 'отложенные задачи.csv'
+  ],
+  [#'В разработке', 'В аналитике', 
+  'В тестировании', 'Готовые задачи'#, 'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
   ]
  ]
 
@@ -50,6 +58,9 @@ def test_main(driver):
     # кликнуть на фильтр 
     for t in range(len(filters_npa[0])):
         generate_report(driver, t)
+    
+    for z in range(len(filters_npa[1])):
+        pyxl(filters_npa[1][z], filters_npa[2][z])
 
 
 def generate_report(driver, t):
@@ -75,7 +86,7 @@ def generate_report(driver, t):
             table_data = get_data(driver)
             # Записываем в файл добытые данные...
             write_data(table_data, filters_npa[1][t], 'data')
-            #print(table_data[0])
+            
     except:
         print('нет счетчика задач, задач тоже нет')
         
@@ -155,7 +166,24 @@ def read_data(path, assert_data):
         reader = csv.DictReader(csv_file, delimiter=',')
         #print(reader[0])
         for line in reader:
-            reading_txt.append(line["№ в Jira|Тип задачи|Статус|Тема|Исполнитель|Тестировщик"])
+            reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик"])
     
     for x in range(len(reading_txt)):
         assert reading_txt[x] == assert_data[x][0]
+
+def pyxl(p, sh):
+    
+    #wb = Workbook(write_only=True)
+    d_file = '05_04_18 Предварительный отчет по задачам релиза 1.xlsx'
+    report_book = lw(d_file)
+    current_sheet = report_book[sh]
+    
+    reading_txt=[]
+    with open(p, "r") as csv_file:
+        reader = csv.DictReader(csv_file, delimiter=',')
+        #print(reader[0])
+        for line in reader:
+            reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик"])
+    for row in range(3, len(reading_txt)):
+        _ = current_sheet.cell(column = 2, row=row, value="{0}".format(reading_txt[row-3]))
+    report_book.save(filename=d_file)
