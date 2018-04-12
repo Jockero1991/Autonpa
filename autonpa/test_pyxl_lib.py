@@ -17,7 +17,8 @@ def test_pyxl(p, sh):
         #print(reader[0])
         for line in reader:
             reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик"])
-    for row in range(3, len(reading_txt)):
+    #print(len(reading_txt))
+    for row in range(3, (len(reading_txt)+3)):
         _ = current_sheet.cell(column = 2, row=row, value="{0}".format(reading_txt[row-3]))
     report_book.save(filename=d_file)
     
@@ -44,4 +45,4 @@ def test_pyxl(p, sh):
 
 #     wb.save(filename = dest_filename)
 # example_pyxl()
-#test_pyxl('в_тестировании.csv', 'В тестировании')
+test_pyxl('в_тестировании.csv', 'В тестировании')

@@ -85,7 +85,7 @@ def generate_report(driver, t):
         if int(curr_page_count) == int(all_tasks):
             table_data = get_data(driver)
             # Записываем в файл добытые данные...
-            write_data(table_data, filters_npa[1][t], 'data')
+            write_data(table_data, filters_npa[1][t], 'data', True)
             
     except:
         print('нет счетчика задач, задач тоже нет')
@@ -147,7 +147,7 @@ def get_data(driver):
         print('Задач нет')
         return ''
 
-def write_data(data, path, trigger='headers'):
+def write_data(data, path, trigger='headers', end = False):
     # в случае trigger = 'headers' в файл записывается строчка с заголовками столбцов
     # в случае trigger = 'data' в файл записываются данные с задачами
     with open(path, "a", newline='') as csv_file:
@@ -159,6 +159,8 @@ def write_data(data, path, trigger='headers'):
         if trigger == 'data':
             for line in data:
                 writer.writerow(line)
+        if end:
+            csv_file.close()
 
 def read_data(path, assert_data):
     reading_txt=[]
@@ -173,7 +175,6 @@ def read_data(path, assert_data):
 
 def pyxl(p, sh):
     
-    #wb = Workbook(write_only=True)
     d_file = '05_04_18 Предварительный отчет по задачам релиза 1.xlsx'
     report_book = lw(d_file)
     current_sheet = report_book[sh]
@@ -184,6 +185,7 @@ def pyxl(p, sh):
         #print(reader[0])
         for line in reader:
             reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик"])
-    for row in range(3, len(reading_txt)):
+    #print(len(reading_txt))
+    for row in range(3, (len(reading_txt)+3)):
         _ = current_sheet.cell(column = 2, row=row, value="{0}".format(reading_txt[row-3]))
     report_book.save(filename=d_file)
