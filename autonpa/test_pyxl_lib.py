@@ -4,10 +4,10 @@ from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
 import csv
 
-def test_pyxl(p, sh):
+def pyxl(p, sh):
     
     #wb = Workbook(write_only=True)
-    d_file = '05_04_18 Предварительный отчет по задачам релиза 1.xlsx'
+    d_file = 'data\\12_04_18 Предварительный отчет по задачам релиза 1.xlsx'
     report_book = lw(d_file)
     current_sheet = report_book[sh]
     
@@ -45,4 +45,4 @@ def test_pyxl(p, sh):
 
 #     wb.save(filename = dest_filename)
 # example_pyxl()
-test_pyxl('в_тестировании.csv', 'В тестировании')
+#test_pyxl('в_тестировании.csv', 'В тестировании')

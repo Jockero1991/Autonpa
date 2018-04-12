@@ -14,7 +14,7 @@ from openpyxl import load_workbook as lw
 from openpyxl import Workbook
 from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
-#from test_pyxl_lib import test_pyxl
+from test_pyxl_lib import pyxl
 
 @pytest.fixture
 def driver(request):
@@ -27,19 +27,19 @@ def driver(request):
     return wd
 
 filters_npa = [
-[#"10765",  # задачи в разработке
-#"10766", # задачи в аналитике
+["10765",  # задачи в разработке
+"10766", # задачи в аналитике
 "10769", # задачи в тестировании
-"10767"#,  закрытые задачи
-#"10770", # Открытые баги 
-#"10772", # Закрытые баги
-#"10773"  # Отложенные задачи
+"10767", # закрытые задачи
+"10770", # Открытые баги 
+"10772", # Закрытые баги
+"10773"  # Отложенные задачи
 ],
- [#'в_разработке.csv', 'в_аналитике.csv', 
- 'в_тестировании.csv', 'закрытые_задачи.csv'#, 'Открытые_баги.csv', 'закрытые_баги.csv', 'отложенные задачи.csv'
+ ['data\в_разработке.csv', 'data\в_аналитике.csv', 
+ 'data\в_тестировании.csv', 'data\закрытые_задачи.csv', 'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
   ],
-  [#'В разработке', 'В аналитике', 
-  'В тестировании', 'Готовые задачи'#, 'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
+  ['В разработке', 'В аналитике', 
+  'В тестировании', 'Готовые задачи', 'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
   ]
  ]
 
@@ -173,19 +173,19 @@ def read_data(path, assert_data):
     for x in range(len(reading_txt)):
         assert reading_txt[x] == assert_data[x][0]
 
-def pyxl(p, sh):
+# def pyxl(p, sh):
     
-    d_file = '05_04_18 Предварительный отчет по задачам релиза 1.xlsx'
-    report_book = lw(d_file)
-    current_sheet = report_book[sh]
+#     d_file = '05_04_18 Предварительный отчет по задачам релиза 1.xlsx'
+#     report_book = lw(d_file)
+#     current_sheet = report_book[sh]
     
-    reading_txt=[]
-    with open(p, "r") as csv_file:
-        reader = csv.DictReader(csv_file, delimiter=',')
-        #print(reader[0])
-        for line in reader:
-            reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик"])
-    #print(len(reading_txt))
-    for row in range(3, (len(reading_txt)+3)):
-        _ = current_sheet.cell(column = 2, row=row, value="{0}".format(reading_txt[row-3]))
-    report_book.save(filename=d_file)
+#     reading_txt=[]
+#     with open(p, "r") as csv_file:
+#         reader = csv.DictReader(csv_file, delimiter=',')
+#         #print(reader[0])
+#         for line in reader:
+#             reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик"])
+#     #print(len(reading_txt))
+#     for row in range(3, (len(reading_txt)+3)):
+#         _ = current_sheet.cell(column = 2, row=row, value="{0}".format(reading_txt[row-3]))
+#     report_book.save(filename=d_file)
