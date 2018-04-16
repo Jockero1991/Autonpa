@@ -165,8 +165,17 @@ def myExit(text=''):
 
 f = open(my_vars['log'], 'w')
 #scrnp = my_vars['scrn']
+db_conn = ''
+user_name = ''
+password = ''
 
-
+#db_conn=open()
+with open('conn.txt', "r") as conf:
+    all_data = conf.readlines()
+    print(all_data)
+    user_name = all_data[1].split(',')[0].strip("'")
+    password = all_data[1].split(',')[1].strip("' \n'")
+    db_conn = all_data[3].strip("' \n'")
 
 # Выпадающие списки
 menu_item = '//*[@id="create_list"]'
@@ -175,7 +184,10 @@ dd_list = [
 '//*[@id="type-project__result"]', # Тип проекта
 '//*[@id="status-project__result"]', # Статус
 '//*[@id="aproval-form__result"]', # Формат утверждения
-'//*[@id="review-type__result"]'# Тип рассмотрения
+'//*[@id="review-type__result"]', # Тип рассмотрения
+'//*[@id="__result"][1]', # Организация для первой добавленной записи
+'//*[@id="__result"][2]', # Должность для первой добавленной записи
+'//*[@id="__result"][3]' # ФИО для первой добавленной записи.
 ]
 
 format_u = ['//*[@id="aproval-form__list"]/div[1]' # Заседание ПМ
@@ -200,7 +212,11 @@ s_spravoch = [['DOCUMENT_PACKAGE', 'REPORT', 'ABOUT_MAKING_CHANGES'], # - зна
 [1, 2, 3, 4, 5, 6], # - значения типов проектов в БД
 [1, 2, 3, 4], # - значения статусов в БД.
 [1, 2, 3, 4], # - значения формата утверждения в БД
-[1, 2, 3, 4, 5]] # Тип рассмотрения в БД
+[1, 2, 3, 4, 5], # Тип рассмотрения в БД
+[10],  # Далеко не все значения справочника организаций...
+[9], # должность Менеджер по персоналу.
+[28] # id записи в справочнике сотрудников.
+] 
 
 # путь к драйверу для хрома, необходимая связка между хромом и вебдрайвером
 # скачать у гугла можно
@@ -241,7 +257,7 @@ def cr_pack_init(path=0, pt=0):
 # отдельный метод для нажатия на Ок в алерте.
 def alert_passer():
     # Нажать на Ок в поп-ап
-    sleep(3)
+    sleep(4)
     try:
         alert = driver.switch_to_alert()
         if alert.text == "Данные сохранены успешно":
@@ -263,7 +279,7 @@ def alert_passer():
 
 scenario_1 = [
 [1, 'page', 'http://npa-tst.it2g.ru/main/dashboard'], #открыть страницу [тип элемента, url]
-[2, 'oib', 'npaadmin', '123456'], #login
+[2, 'oib', user_name, password], #login
 [3, 'new_pack', 0, 0], # инициировать создание пакета первым способом с первым значением.
 [4, 'button', 'save', '//*[@id="save-button"]'], # Нажать Сохранить с пустыми обязательными полями
 [5, 'pop-up', 'error', 'popup-alert__field', 'Тип проекта', 'Статус', 'Наименование', 
@@ -284,7 +300,7 @@ scenario_1 = [
 
 scenario_2 = [ # создание пакета с 3-мя обязательными полями: Тип проекта, Статус, Наименование
     [0, 'page', 'http://npa-tst.it2g.ru/main/dashboard'],
-    [1, 'oib', 'npaadmin', '123456'], # вводим логин и пароль
+    [1, 'oib', user_name, password], # вводим логин и пароль
     [2, 'new_pack', 0, 0], # инициируем создание пакета.
     [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
     [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
@@ -296,22 +312,36 @@ scenario_2 = [ # создание пакета с 3-мя обязательны�
 
 scenario_3 = [ # создание пакета с 3-мя обязательными полями: Тип проекта, Статус, Наименование
     [0, 'page', 'http://npa-tst.it2g.ru/main/dashboard'],
-    [1, 'oib', 'npaadmin', '123456'], # вводим логин и пароль
+    [1, 'oib', user_name, password], # вводим логин и пароль
     [2, 'new_pack', 0, 0], # инициируем создание пакета.
     [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
     [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
     [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование 
     [6, 'dropdown', dd_list[2], format_u[0], s_spravoch[3][0]], # Выбираем формат утверждение Заседание ПМ
-    [7, 'datapicker', '//*[@id="planedReviewDate"]', 1], # Заполняем планируемую дату рассмотрения 
+    [7, 'datapicker', '//*[@id="planedReviewDate"]', '14052018'], # Заполняем планируемую дату рассмотрения 
     [8, 'text', '//*[@id="reviewReason"]', 'Рассмотрение необходимо провести для соблюдения поправки в законе о постановлениях правительства Мэрии г. Москвы.'], # Заполняем обоснование рассмотрение
     [9, 'button', 'add-review', '//*[@id="add-review"]'], # Добавляем рассмотрение
-    [10, 'datapicker', '//*[@id="summonsDate"]', 2], # Заполняем дату повестки
+    [10, 'datapicker', '//*[@id="summonsDate"]', '16052018'], # Заполняем дату повестки
     [11, 'dropdown', dd_list[3], review_type[0], s_spravoch[4][0]], # Выбираем тип рассмотрения
     [12, 'button', 'save', '//*[@id="save-button"]'], # нажимаем Сохранить
     [13, 'alert'], # ищем алерт, считываеем и проверяем текст алерта, нажимаем ок.
     [14, 'check_db', 'main', 'review-date', 'subpoena-date'] # проверить данные в бд только 3 обязательных поля.
     ] 
 
+scenario_4=[
+    [0, 'page', 'http://npa-tst.it2g.ru/main/dashboard'],
+    [1, 'oib', user_name, password], # вводим логин и пароль
+    [2, 'new_pack', 0, 0], # инициируем создание пакета.
+    [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
+    [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
+    [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование
+    [6, 'text', '//*[@id="description"]', 'В данном пакете документа необходимо отразить поправку в законе о зеленых насаждениях от 12.12.2000 года.'] # Краткое содержание
+    [7, 'text', '//*[@id="reasonRegistrationNumber"]', '11-3254/90'], # Номер поручения
+    [8, 'datapicker', '//*[@id="reasonReceiveDate"]', '15082017'], # Дата поручения
+    [9, 'text', '//*[@id="reasonInitiator"]', 'Иванов В. В.'], # Инициатор
+    [10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]']#, # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
+    #[11, 'dropdown', ]
+]
 
 
 
@@ -348,13 +378,8 @@ def negative(sc):
                 ms.waiting('presence_of_element_located', 'XPATH', sc[x][y+1], 2, 0).send_keys(sc[x][y+2])
             
             if sc[x][y] == 'datapicker':
-                print(type(sc[x][y+2]))
-                driver.find_elements_by_class_name('btnpickerenabled')[int(sc[x][y+2])].click()
-                driver.find_elements_by_class_name('datevalue')[5].click()
-                driver.find_elements_by_class_name('datevalue')[5].click()
-                # driver.execute_script('$(".btnpickerenabled").click()')
-                # driver.execute_script('$(".daycell").click()')
-                #ms.waiting('element_to_be_clickable', 'XPATH', sc[x][y+1], 2, 0).send_keys(sc[x][y+2])
+                driver.find_element_by_xpath(f'//*[@id="{sc[x][y+1]}"]/my-date-picker/div/div/input').send_keys(f'{sc[x][y+2]}')
+
 
             if sc[x][y] == 'pop-up' and sc[x][y+1] == 'error':
                 exp = []
@@ -381,14 +406,16 @@ def negative(sc):
                 exp_values.append(ms.waiting('presence_of_element_located', 'XPATH', "/html/body/app-root/app-documents/div/div[2]/div[1]/div/div[1]/span", 2, 0).text)
                 print(exp_values[len(exp_values) - 1])
                 if 'main' in sc[x]:
-                    with ps.open('pq://npa:npa@172.17.21.166:5432/npa') as db:
+                    with ps.open(db_conn) as db:
                         db_value.append(db.query("SELECT count(*) FROM document_package WHERE document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Считаем кол-во пакетов с таким же учетным номером
                         db_value.append(db.query("SELECT package_type FROM document_package WHERE document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Тип пакета
                         db_value.append(db.query("SELECT n.project_type_id FROM npa n left join document_package dp on n.document_package_id=dp.id where dp.document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Тип проекта
                         db_value.append(db.query("SELECT n.status FROM npa n left join document_package dp on n.document_package_id=dp.id where dp.document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Статус
                         db_value.append(db.query("SELECT n.name FROM npa n left join document_package dp on n.document_package_id=dp.id where dp.document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Наименование
+                
+                
                 if 'review-date' in sc[x]:
-                    with ps.open('pq://npa:npa@172.17.21.166:5432/npa') as db:
+                    with ps.open(db_conn) as db:
                         db_value.append(db.query("SELECT (rd.planned_review_date)::date FROM review_date rd LEFT join document_package dp on rd.document_package_id = dp.id WHERE dp.document_package_number ='%s'" % exp_values[len(exp_values) - 1])[0][0]) # Плановая дата рассмотрения
                         db_value.append(db.query("SELECT rd.approval_form_id FROM review_date rd LEFT join document_package dp on rd.document_package_id = dp.id WHERE dp.document_package_number ='%s'" % exp_values[len(exp_values) - 1])[0][0]) # Формат утверждения
                         db_value.append(db.query("SELECT (rd.reason_date_review) FROM review_date rd LEFT join document_package dp on rd.document_package_id = dp.id WHERE dp.document_package_number ='%s'" % exp_values[len(exp_values) - 1])[0][0]) # Обоснование даты рассмотрения
@@ -406,9 +433,22 @@ def negative(sc):
                             stack_result.append(1)
                         else:
                             stack_errors.append('Обоснование - не ОК: ' + str(db_value[7]))
+                
+                if 'subpoena' in sc[x]:
+                    with ps.open(db_conn) as db:
+                        db_value.append(db.query("SELECT (sd.subpoena_date)::date FROM subpoena_date sd LEFT join review_date rd on sd.review_date_id=rd.id LEFT join document_package dp on rd.document_package_id = dp.id WHERE dp.document_package_number ='%s'" % exp_values[len(exp_values) - 1])[0][0]))
+                        db_value.append(db.query("SELECT sd.review_type_id FROM subpoena_date sd LEFT join review_date rd on sd.review_date_id=rd.id LEFT join document_package dp on rd.document_package_id = dp.id WHERE dp.document_package_number ='%s'" % exp_values[len(exp_values) - 1])[0][0]))
+                        if db_value[8] is not 'Null':
+                            stack_result.append(1)
+                        else:
+                            stack_errors.append('Дата повестки - не ОК: '+ str(db_value[8]))
+                        if db_value[9] == exp_values[6]:
+                            stack_result.append(1)
+                        else:
+                            stack_errors.append('Тип заседания - не ОК: ' + str(db_value[9]))
                         
-                print('Ожидаемые значения' + str(exp_values))
-                print(db_value)
+                #print('Ожидаемые значения' + str(exp_values))
+                #print(db_value)
                 if db_value[0] == 1:
                     stack_result.append(1)
                     print('Найден 1 пакет документа')
@@ -436,8 +476,6 @@ def negative(sc):
                 else:
                     stack_errors.append('Наименование - не ОК: ' + str(db_value[4]))
                
-
-    
     if stack_errors == []:
         print('Все тесты пройдены')
     else:
@@ -447,9 +485,4 @@ def negative(sc):
 
 # Запускаем тестовый сценарий
 driver = wd.Chrome(chrome_options=chrome_options)
-# result = executer()
-# print(result)
-# if result != None:
-#     db_check(result)
-
 negative(scenario_3)

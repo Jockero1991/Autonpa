@@ -13,3 +13,4 @@ buildNumber.properties
 autonpa/login_data.txt
 *.xlsx
 *.csv
+autonpa/autotests/conn.txt
