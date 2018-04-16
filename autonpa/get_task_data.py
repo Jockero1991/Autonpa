@@ -172,20 +172,3 @@ def read_data(path, assert_data):
     
     for x in range(len(reading_txt)):
         assert reading_txt[x] == assert_data[x][0]
-
-# def pyxl(p, sh):
-    
-#     d_file = '05_04_18 Предварительный отчет по задачам релиза 1.xlsx'
-#     report_book = lw(d_file)
-#     current_sheet = report_book[sh]
-    
-#     reading_txt=[]
-#     with open(p, "r") as csv_file:
-#         reader = csv.DictReader(csv_file, delimiter=',')
-#         #print(reader[0])
-#         for line in reader:
-#             reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик"])
-#     #print(len(reading_txt))
-#     for row in range(3, (len(reading_txt)+3)):
-#         _ = current_sheet.cell(column = 2, row=row, value="{0}".format(reading_txt[row-3]))
-#     report_book.save(filename=d_file)
