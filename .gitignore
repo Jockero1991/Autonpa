@@ -14,3 +14,7 @@ autonpa/login_data.txt
 *.xlsx
 *.csv
 autonpa/autotests/conn.txt
+autonpa/autotests/input.ini
+autonpa/autotests/logs/create.log
+*.ini
+*.log

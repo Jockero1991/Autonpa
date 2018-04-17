@@ -157,7 +157,7 @@ def myExit(text=''):
     myLogging(f, "myExit() function call: "+text)
     f.close()
     try:
-        r.close()
+        f.close()
     except:
         pass
     driver.quit()
@@ -350,6 +350,7 @@ scenario_4=[
 
 # Нужен метод для поиска элементов списка.
 # Нужно использовать find_elements
+# Решено временно использовать отдельный блок действий для заполнения полей осн. реквизитов.
 
 # возникла необходимость вызывать функцию с помощью колбэков и анонимных функций lambda
 # вариант 1: массив callback с вызовами функции negative с параметрами строками массива scenario_1
@@ -387,6 +388,8 @@ def negative(sc):
                 temp = f'{sc[x][y+1]}/my-date-picker/div/div/input'
                 driver.find_element_by_xpath(temp).send_keys(sc[x][y+2])
 
+            if sc[x][y] == 'requisites' and sc[x][y+1]:
+                pass
 
             if sc[x][y] == 'pop-up' and sc[x][y+1] == 'error':
                 exp = []

@@ -1,21 +1,25 @@
-16.04.2018 07:27:19	C:\Users\VKovalenko\Autonpa
-16.04.2018 07:27:19	Открываем Chrome
-16.04.2018 07:27:38	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id3 > div:nth-child(3) > input
-16.04.2018 07:27:41	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id1
-16.04.2018 07:27:41	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id2
-16.04.2018 07:27:49	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="create_list"]
-16.04.2018 07:27:51	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="creating-pack-package-of-document"]
-16.04.2018 07:27:51	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__result"]
-16.04.2018 07:27:52	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__list"]/div[1]
-16.04.2018 07:27:52	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__result"]
-16.04.2018 07:27:53	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__list"]/div[1]
-16.04.2018 07:27:53	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="name"]
-16.04.2018 07:27:54	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="aproval-form__result"]
-16.04.2018 07:27:54	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="aproval-form__list"]/div[1]
-16.04.2018 07:27:56	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reviewReason"]
-16.04.2018 07:27:58	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="add-review"]
-16.04.2018 07:27:59	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="review-type__result"]
-16.04.2018 07:27:59	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="review-type__list"]/div[1]
-16.04.2018 07:28:00	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="save-button"]
-16.04.2018 07:28:03	condition: presence_of_element_located, locating: XPATH, locator: /html/body/app-root/app-documents/div/div[2]/div[1]/div/div[1]/span
+17.04.2018 11:22:30	chromedriver.exe
+17.04.2018 11:22:30	Открываем Chrome
+17.04.2018 11:22:39	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id3 > div:nth-child(3) > input
+17.04.2018 11:22:41	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id1
+17.04.2018 11:22:41	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id2
+17.04.2018 11:22:44	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="create_list"]
+17.04.2018 11:22:44	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="creating-pack-package-of-document"]
+17.04.2018 11:22:45	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__result"]
+17.04.2018 11:22:45	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__list"]/div[1]
+17.04.2018 11:22:45	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__result"]
+17.04.2018 11:22:45	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__list"]/div[1]
+17.04.2018 11:22:45	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="name"]
+17.04.2018 11:22:46	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="description"]
+17.04.2018 11:22:47	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reasonRegistrationNumber"]
+17.04.2018 11:22:47	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reasonInitiator"]
+17.04.2018 11:22:47	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="requisites"]//button[1]
+17.04.2018 11:22:47	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="__result"][1]
+17.04.2018 11:22:48	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="__list"]/div[1]
+17.04.2018 11:22:48	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="__result"][2]
+17.04.2018 11:22:50	 Элемента не обнаружено. 
+ condition: element_to_be_clickable 
+ locating: XPATH
+ locator: //*[@id="__result"][2] 
+ timeout: 2
 
