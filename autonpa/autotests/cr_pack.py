@@ -172,10 +172,11 @@ password = ''
 #db_conn=open()
 with open('conn.txt', "r") as conf:
     all_data = conf.readlines()
-    print(all_data)
+    #print(all_data)
     user_name = all_data[1].split(',')[0].strip("'")
     password = all_data[1].split(',')[1].strip("' \n'")
     db_conn = all_data[3].strip("' \n'")
+    conf.close()
 
 # Выпадающие списки
 menu_item = '//*[@id="create_list"]'
@@ -189,6 +190,8 @@ dd_list = [
 '//*[@id="__result"][2]', # Должность для первой добавленной записи
 '//*[@id="__result"][3]' # ФИО для первой добавленной записи.
 ]
+
+requisites = ['//*[@id="__list"]/div[1]']
 
 format_u = ['//*[@id="aproval-form__list"]/div[1]' # Заседание ПМ
 ]
@@ -335,12 +338,14 @@ scenario_4=[
     [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
     [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
     [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование
-    [6, 'text', '//*[@id="description"]', 'В данном пакете документа необходимо отразить поправку в законе о зеленых насаждениях от 12.12.2000 года.'] # Краткое содержание
+    [6, 'text', '//*[@id="description"]', 'В данном пакете документа необходимо отразить поправку в законе о зеленых насаждениях от 12.12.2000 года.'], # Краткое содержание
     [7, 'text', '//*[@id="reasonRegistrationNumber"]', '11-3254/90'], # Номер поручения
     [8, 'datapicker', '//*[@id="reasonReceiveDate"]', '15082017'], # Дата поручения
     [9, 'text', '//*[@id="reasonInitiator"]', 'Иванов В. В.'], # Инициатор
-    [10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]']#, # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
-    #[11, 'dropdown', ]
+    [10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]'], # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
+    [11, 'dropdown', dd_list[4], requisites[0], s_spravoch[4][0]], # Организация
+    [12, 'dropdown', dd_list[5], requisites[0], s_spravoch[5][0]], # Должность
+    [13, 'dropdown', dd_list[6], requisites[0], s_spravoch[6][0]] # Сотрудник
 ]
 
 
@@ -367,7 +372,7 @@ def negative(sc):
             if sc[x][y] == 'new_pack':
                 exp_values.append(cr_pack_init(sc[x][y+1], sc[x][y+2]))    
             if sc[x][y] == 'button':
-                print('Нажать кнопку Сохранить')
+                #print('Нажать кнопку Сохранить')
                 ms.waiting('element_to_be_clickable', 'XPATH', sc[x][y+2], 2, 0).click()
             
             if sc[x][y] == 'dropdown':
@@ -378,7 +383,8 @@ def negative(sc):
                 ms.waiting('presence_of_element_located', 'XPATH', sc[x][y+1], 2, 0).send_keys(sc[x][y+2])
             
             if sc[x][y] == 'datapicker':
-                driver.find_element_by_xpath(f'//*[@id="{sc[x][y+1]}"]/my-date-picker/div/div/input').send_keys(f'{sc[x][y+2]}')
+                temp = f'{sc[x][y+1]}/my-date-picker/div/div/input'
+                driver.find_element_by_xpath(temp).send_keys(sc[x][y+2])
 
 
             if sc[x][y] == 'pop-up' and sc[x][y+1] == 'error':
@@ -436,8 +442,8 @@ def negative(sc):
                 
                 if 'subpoena' in sc[x]:
                     with ps.open(db_conn) as db:
-                        db_value.append(db.query("SELECT (sd.subpoena_date)::date FROM subpoena_date sd LEFT join review_date rd on sd.review_date_id=rd.id LEFT join document_package dp on rd.document_package_id = dp.id WHERE dp.document_package_number ='%s'" % exp_values[len(exp_values) - 1])[0][0]))
-                        db_value.append(db.query("SELECT sd.review_type_id FROM subpoena_date sd LEFT join review_date rd on sd.review_date_id=rd.id LEFT join document_package dp on rd.document_package_id = dp.id WHERE dp.document_package_number ='%s'" % exp_values[len(exp_values) - 1])[0][0]))
+                        db_value.append(db.query("SELECT (sd.subpoena_date)::date FROM subpoena_date sd LEFT join review_date rd on sd.review_date_id=rd.id LEFT join document_package dp on rd.document_package_id = dp.id WHERE dp.document_package_number ='%s'" % exp_values[len(exp_values) - 1])[0][0])
+                        db_value.append(db.query("SELECT sd.review_type_id FROM subpoena_date sd LEFT join review_date rd on sd.review_date_id=rd.id LEFT join document_package dp on rd.document_package_id = dp.id WHERE dp.document_package_number ='%s'" % exp_values[len(exp_values) - 1])[0][0])
                         if db_value[8] is not 'Null':
                             stack_result.append(1)
                         else:
@@ -485,4 +491,4 @@ def negative(sc):
 
 # Запускаем тестовый сценарий
 driver = wd.Chrome(chrome_options=chrome_options)
-negative(scenario_3)
+negative(scenario_4)
