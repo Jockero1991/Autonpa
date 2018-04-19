@@ -342,10 +342,8 @@ scenario_4=[
     [7, 'text', '//*[@id="reasonRegistrationNumber"]', '11-3254/90'], # Номер поручения
     [8, 'datapicker', '//*[@id="reasonReceiveDate"]', '15082017'], # Дата поручения
     [9, 'text', '//*[@id="reasonInitiator"]', 'Иванов В. В.'], # Инициатор
-    [10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]'], # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
-    [11, 'dropdown', dd_list[4], requisites[0], s_spravoch[4][0]], # Организация
-    [12, 'dropdown', dd_list[5], requisites[0], s_spravoch[5][0]], # Должность
-    [13, 'dropdown', dd_list[6], requisites[0], s_spravoch[6][0]] # Сотрудник
+    #[10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]'], # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
+    [10, 'requisites', 1] # основные реквизиты по 1-му сотруднику в подразделе
 ]
 
 # Нужен метод для поиска элементов списка.
@@ -388,8 +386,30 @@ def negative(sc):
                 temp = f'{sc[x][y+1]}/my-date-picker/div/div/input'
                 driver.find_element_by_xpath(temp).send_keys(sc[x][y+2])
 
-            if sc[x][y] == 'requisites' and sc[x][y+1]:
-                pass
+            if sc[x][y] == 'requisites':
+                add_emps=[]
+                add_emps = driver.find_elements_by_class_name('add-button')
+                print(add_emps[1].text)
+                #add_emps[0].click()
+                # нажимаем кнопки Добавить сотрудника для каждого блока (sc[x][y+1])-раз
+                for _ in range(sc[x][y+1]):
+                    add_emps[0].click()
+                    add_emps[1].click()
+                    add_emps[2].click()
+                
+                drops = driver.find_elements_by_id('__result')
+                org = []
+                org = [drops[n] for n in range(0, len(drops), 3)]
+                print(org)
+                for o in range(len(org)):
+                    driver.execute_script("window.scrollTo(200, document.body.scrollHeight);")
+                    org[o].click()
+                    sleep(1)
+                    org[o].find_element_by_xpath('//*[@id="__list"]/div[1]').click()
+                    
+                    #org[o].send_keys('Test')
+
+
 
             if sc[x][y] == 'pop-up' and sc[x][y+1] == 'error':
                 exp = []

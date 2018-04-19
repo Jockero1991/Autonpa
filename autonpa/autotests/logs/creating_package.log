@@ -1,25 +1,16 @@
-17.04.2018 11:22:30	chromedriver.exe
-17.04.2018 11:22:30	Открываем Chrome
-17.04.2018 11:22:39	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id3 > div:nth-child(3) > input
-17.04.2018 11:22:41	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id1
-17.04.2018 11:22:41	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id2
-17.04.2018 11:22:44	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="create_list"]
-17.04.2018 11:22:44	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="creating-pack-package-of-document"]
-17.04.2018 11:22:45	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__result"]
-17.04.2018 11:22:45	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__list"]/div[1]
-17.04.2018 11:22:45	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__result"]
-17.04.2018 11:22:45	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__list"]/div[1]
-17.04.2018 11:22:45	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="name"]
-17.04.2018 11:22:46	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="description"]
-17.04.2018 11:22:47	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reasonRegistrationNumber"]
-17.04.2018 11:22:47	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reasonInitiator"]
-17.04.2018 11:22:47	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="requisites"]//button[1]
-17.04.2018 11:22:47	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="__result"][1]
-17.04.2018 11:22:48	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="__list"]/div[1]
-17.04.2018 11:22:48	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="__result"][2]
-17.04.2018 11:22:50	 Элемента не обнаружено. 
- condition: element_to_be_clickable 
- locating: XPATH
- locator: //*[@id="__result"][2] 
- timeout: 2
+18.04.2018 23:51:20	chromedriver.exe
+18.04.2018 23:51:20	Открываем Chrome
+18.04.2018 23:51:34	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id3 > div:nth-child(3) > input
+18.04.2018 23:51:37	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id1
+18.04.2018 23:51:37	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id2
+18.04.2018 23:51:42	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="create_list"]
+18.04.2018 23:51:43	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="creating-pack-package-of-document"]
+18.04.2018 23:51:43	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__result"]
+18.04.2018 23:51:47	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__list"]/div[1]
+18.04.2018 23:51:47	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__result"]
+18.04.2018 23:51:48	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__list"]/div[1]
+18.04.2018 23:51:48	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="name"]
+18.04.2018 23:51:49	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="description"]
+18.04.2018 23:51:50	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reasonRegistrationNumber"]
+18.04.2018 23:51:51	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reasonInitiator"]
 
