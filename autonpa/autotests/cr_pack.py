@@ -343,7 +343,13 @@ scenario_4=[
     [8, 'datapicker', '//*[@id="reasonReceiveDate"]', '15082017'], # Дата поручения
     [9, 'text', '//*[@id="reasonInitiator"]', 'Иванов В. В.'], # Инициатор
     #[10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]'], # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
-    [10, 'requisites', 1] # основные реквизиты по 1-му сотруднику в подразделе
+    [10, 'dropdown', dd_list[2], format_u[0], s_spravoch[3][0]], # Выбираем формат утверждение Заседание ПМ
+    [11, 'datapicker', '//*[@id="planedReviewDate"]', '14052018'], # Заполняем планируемую дату рассмотрения 
+    [12, 'text', '//*[@id="reviewReason"]', 'Рассмотрение необходимо провести для соблюдения поправки в законе о постановлениях правительства Мэрии г. Москвы.'], # Заполняем обоснование рассмотрение
+    [13, 'button', 'add-review', '//*[@id="add-review"]'], # Добавляем рассмотрение
+    [14, 'datapicker', '//*[@id="summonsDate"]', '16052018'], # Заполняем дату повестки
+    [15, 'dropdown', dd_list[3], review_type[0], s_spravoch[4][0]],
+    [16, 'requisites', 1] # основные реквизиты по 1-му сотруднику в подразделе
 ]
 
 # Нужен метод для поиска элементов списка.
@@ -400,9 +406,16 @@ def negative(sc):
                 drops = driver.find_elements_by_id('__result')
                 org = []
                 org = [drops[n] for n in range(0, len(drops), 3)]
-                print(org)
+                job_positions = [drops[n] for n in range(1, len(drops), 3)]
+                emps = [drops[n] for n in range(2, len(drops), 3)]
+                print(org[1].get_attribute('placeholder'), job_positions[1].get_attribute('placeholder'), emps[1].get_attribute('placeholder'))
+                #driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div')
+                driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div').click()
+                sleep(1)
+                driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div/div[3]/div/div[1]').click()
+
                 for o in range(len(org)):
-                    driver.execute_script("window.scrollTo(200, document.body.scrollHeight);")
+                    #driver.execute_script("window.scrollTo(200, document.body.scrollHeight);")
                     org[o].click()
                     sleep(1)
                     org[o].find_element_by_xpath('//*[@id="__list"]/div[1]').click()
