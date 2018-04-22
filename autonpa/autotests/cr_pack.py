@@ -169,7 +169,6 @@ db_conn = ''
 user_name = ''
 password = ''
 
-#db_conn=open()
 with open('conn.txt', "r") as conf:
     all_data = conf.readlines()
     #print(all_data)
@@ -241,19 +240,19 @@ chrome_options.add_argument("--window-size=1920,1080")
 # функция заполнения выпадающих списков
 def dropdown_feeler(dropdown, value, exp_DB):
 	# кликаем по выпадающему списку
-	ms.waiting('element_to_be_clickable', 'XPATH', dropdown, 2, 0).click()
+	ms.waiting('element_to_be_clickable', 'XPATH', dropdown, 3, 0).click()
 	# кликаем по значению в выпадающем списке
-	ms.waiting('element_to_be_clickable', 'XPATH', value, 2, 0).click()
+	ms.waiting('element_to_be_clickable', 'XPATH', value, 3, 0).click()
 	return exp_DB
 
 def cr_pack_init(path=0, pt=0):
     expected_DB_value = s_spravoch[0][path]
     print(expected_DB_value)
-    element = ms.waiting('element_to_be_clickable', 'XPATH', menu_item, 2, 0)
+    element = ms.waiting('element_to_be_clickable', 'XPATH', menu_item, 3, 0)
     hov = ac(driver).move_to_element(element)
     hov.perform()
     sleep(0.1)
-    ms.waiting('element_to_be_clickable', 'XPATH', types_npa1[pt], 2, 0).click()
+    ms.waiting('element_to_be_clickable', 'XPATH', types_npa1[pt], 3, 0).click()
     return expected_DB_value
 
 
@@ -352,14 +351,15 @@ scenario_4=[
     [16, 'requisites', 1] # основные реквизиты по 1-му сотруднику в подразделе
 ]
 
-# Нужен метод для поиска элементов списка.
-# Нужно использовать find_elements
-# Решено временно использовать отдельный блок действий для заполнения полей осн. реквизитов.
+# Фича-лист:
+# Решено временно использовать отдельный блок действий для заполнения полей осн. реквизитов (реализовано).
+# Написать функцию для заполнения повторяющихся групп элементов, таких как осн. реквизиты.
+# В этой функции должны записываться значения выбираемые при вводе и ожидаемые значения в БД
+# Реализовать обработку сценария добавления документа на вкладке состава пакета и проверку проставления версии.
+# Реализовать сценарий добавления документа через импорт файла с расширениями docx и lex
+# Реализовать сценарий добавления комментария на вкладке Состав пакета.
+# Реализовать сценарий удаления комментария 
 
-# возникла необходимость вызывать функцию с помощью колбэков и анонимных функций lambda
-# вариант 1: массив callback с вызовами функции negative с параметрами строками массива scenario_1
-# вариант 2: использовать анонимные функции 
-# Отложено!
 def negative(sc):
     stack_result = []
     stack_errors = []
@@ -368,9 +368,9 @@ def negative(sc):
         for y in range(len(sc[x])):
 
             if sc[x][y] =='oib':
-                ms.waiting('presence_of_element_located', 'CSS_SELECTOR', '#id3 > div:nth-child(3) > input', 2, 0).send_keys(sc[x][y+1])
-                ms.waiting('presence_of_element_located', 'CSS_SELECTOR', '#id1', 2, 0).send_keys(sc[x][y+2])
-                ms.waiting('presence_of_element_located', 'CSS_SELECTOR', '#id2', 2, 0).click()
+                ms.waiting('presence_of_element_located', 'ID', 'login', 3, 0).send_keys(sc[x][y+1])
+                ms.waiting('presence_of_element_located', 'ID', 'password', 3, 0).send_keys(sc[x][y+2])
+                ms.waiting('presence_of_element_located', 'ID', 'id1', 3, 0).click()
 
             if sc[x][y] == 'page':
                 driver.get(sc[x][y+1])
@@ -393,10 +393,10 @@ def negative(sc):
                 driver.find_element_by_xpath(temp).send_keys(sc[x][y+2])
 
             if sc[x][y] == 'requisites':
+                wait = WebDriverWait(driver, 10)
                 add_emps=[]
                 add_emps = driver.find_elements_by_class_name('add-button')
-                print(add_emps[1].text)
-                #add_emps[0].click()
+                
                 # нажимаем кнопки Добавить сотрудника для каждого блока (sc[x][y+1])-раз
                 for _ in range(sc[x][y+1]):
                     add_emps[0].click()
@@ -408,21 +408,40 @@ def negative(sc):
                 org = [drops[n] for n in range(0, len(drops), 3)]
                 job_positions = [drops[n] for n in range(1, len(drops), 3)]
                 emps = [drops[n] for n in range(2, len(drops), 3)]
-                print(org[1].get_attribute('placeholder'), job_positions[1].get_attribute('placeholder'), emps[1].get_attribute('placeholder'))
-                #driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div')
+                print(len(drops))
+                
                 driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div').click()
                 sleep(1)
                 driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div/div[3]/div/div[1]').click()
-
-                for o in range(len(org)):
-                    #driver.execute_script("window.scrollTo(200, document.body.scrollHeight);")
+                lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+                
+                job_list=[]
+                for o in range(len(org)-1):
                     org[o].click()
-                    sleep(1)
-                    org[o].find_element_by_xpath('//*[@id="__list"]/div[1]').click()
+                    lists[o].click()    
+                sleep(2)
+                
+                lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+                for u in range(len(lists2)):
+                        if lists2[u] not in lists:
+                            job_list.append(lists2[u])
+                
+                lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+                for t in range(len(job_positions)):
+                    job_positions[t].click()
+                    job_list[t].click()
+                sleep(2)
+                
+                empls = []
+                lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+                for u in range(len(lists2)):
+                        if lists2[u] not in lists:
+                            empls.append(lists2[u])
+                            
+                for v in range(len(emps)):
+                    emps[v].click()
+                    empls[v].click()
                     
-                    #org[o].send_keys('Test')
-
-
 
             if sc[x][y] == 'pop-up' and sc[x][y+1] == 'error':
                 exp = []

@@ -1,22 +1,22 @@
-20.04.2018 08:31:54	chromedriver.exe
-20.04.2018 08:31:54	Открываем Chrome
-20.04.2018 08:32:10	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id3 > div:nth-child(3) > input
-20.04.2018 08:32:13	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id1
-20.04.2018 08:32:13	condition: presence_of_element_located, locating: CSS_SELECTOR, locator: #id2
-20.04.2018 08:32:21	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="create_list"]
-20.04.2018 08:32:23	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="creating-pack-package-of-document"]
-20.04.2018 08:32:24	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__result"]
-20.04.2018 08:32:24	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__list"]/div[1]
-20.04.2018 08:32:24	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__result"]
-20.04.2018 08:32:25	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__list"]/div[1]
-20.04.2018 08:32:25	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="name"]
-20.04.2018 08:32:26	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="description"]
-20.04.2018 08:32:27	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reasonRegistrationNumber"]
-20.04.2018 08:32:28	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reasonInitiator"]
-20.04.2018 08:32:29	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="aproval-form__result"]
-20.04.2018 08:32:29	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="aproval-form__list"]/div[1]
-20.04.2018 08:32:30	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reviewReason"]
-20.04.2018 08:32:31	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="add-review"]
-20.04.2018 08:32:32	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="review-type__result"]
-20.04.2018 08:32:32	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="review-type__list"]/div[1]
+23.04.2018 00:01:43	chromedriver.exe
+23.04.2018 00:01:43	Открываем Chrome
+23.04.2018 00:01:59	condition: presence_of_element_located, locating: ID, locator: login
+23.04.2018 00:02:01	condition: presence_of_element_located, locating: ID, locator: password
+23.04.2018 00:02:02	condition: presence_of_element_located, locating: ID, locator: id1
+23.04.2018 00:02:10	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="create_list"]
+23.04.2018 00:02:11	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="creating-pack-package-of-document"]
+23.04.2018 00:02:12	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__result"]
+23.04.2018 00:02:12	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__list"]/div[1]
+23.04.2018 00:02:12	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__result"]
+23.04.2018 00:02:13	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__list"]/div[1]
+23.04.2018 00:02:13	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="name"]
+23.04.2018 00:02:14	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="description"]
+23.04.2018 00:02:15	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reasonRegistrationNumber"]
+23.04.2018 00:02:16	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reasonInitiator"]
+23.04.2018 00:02:16	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="aproval-form__result"]
+23.04.2018 00:02:17	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="aproval-form__list"]/div[1]
+23.04.2018 00:02:17	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reviewReason"]
+23.04.2018 00:02:19	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="add-review"]
+23.04.2018 00:02:20	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="review-type__result"]
+23.04.2018 00:02:20	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="review-type__list"]/div[1]
 
