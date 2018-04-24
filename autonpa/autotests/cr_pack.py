@@ -274,6 +274,21 @@ def alert_passer():
         print('no any alerts')
         return False
 
+def requisite(dr, ls = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')):
+    #lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+    #job_list=[]
+    res=[]
+    for o in range(len(dr)):
+        dr[o].click()
+        ls[o].click()    
+        sleep(2)
+                
+    lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+    for u in range(len(lists2)):
+        if lists2[u] not in ls:
+            res.append(lists2[u])
+    return res
+
 # Составить список ожидаемых значений
 # Передать его в метод db_check 
 # Функция делает запросы в БД проверяет полученные значения
@@ -405,18 +420,22 @@ def negative(sc):
                 
                 drops = driver.find_elements_by_id('__result')
                 org = []
-                org = [drops[n] for n in range(0, len(drops), 3)]
+                org = [drops[n] for n in range(0, (len(drops)-1), 3)]
                 job_positions = [drops[n] for n in range(1, len(drops), 3)]
                 emps = [drops[n] for n in range(2, len(drops), 3)]
                 print(len(drops))
+                job_list=[]
+                empls = []
                 
                 driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div').click()
                 sleep(1)
                 driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div/div[3]/div/div[1]').click()
-                lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
                 
-                job_list=[]
-                for o in range(len(org)-1):
+
+
+                lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+                #job_list=[]
+                for o in range(len(org)):
                     org[o].click()
                     lists[o].click()    
                 sleep(2)
@@ -432,7 +451,6 @@ def negative(sc):
                     job_list[t].click()
                 sleep(2)
                 
-                empls = []
                 lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
                 for u in range(len(lists2)):
                         if lists2[u] not in lists:
