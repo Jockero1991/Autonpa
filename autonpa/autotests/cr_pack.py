@@ -274,19 +274,33 @@ def alert_passer():
         print('no any alerts')
         return False
 
-def requisite(dr, ls = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')):
-    #lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
-    #job_list=[]
+def requisite(dr, ls=None, nth=1):
+    #print(nth, ls, dr) 
+    
+    if ls == None and nth==1:
+        ls = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+    elif  ls == None and nth != 1:
+        ls = driver.find_elements_by_xpath(f'//*[@id="__list"]/div[{str(nth)}]')
+    elif ls != None:
+        lists= driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
     res=[]
+    #print(nth, ls, dr)
     for o in range(len(dr)):
         dr[o].click()
         ls[o].click()    
-        sleep(2)
-                
-    lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+    sleep(0.5)
+    if nth != 1:
+        lists2 = driver.find_elements_by_xpath(f'//*[@id="__list"]/div[{str(nth)}]')
+    else:
+        lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+        for u in range(len(lists2)):
+            if lists2[u] not in lists:
+                res.append(lists2[u])
+        return res
     for u in range(len(lists2)):
         if lists2[u] not in ls:
             res.append(lists2[u])
+    #print(len(res))
     return res
 
 # Составить список ожидаемых значений
@@ -346,16 +360,16 @@ scenario_3 = [ # создание пакета с 3-мя обязательны�
     ] 
 
 scenario_4=[
-    [0, 'page', 'http://npa-tst.it2g.ru/main/dashboard'],
+    [0, 'page', 'http://npa-dev.it2g.ru/main/dashboard'],
     [1, 'oib', user_name, password], # вводим логин и пароль
     [2, 'new_pack', 0, 0], # инициируем создание пакета.
-    [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
-    [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
-    [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование
-    [6, 'text', '//*[@id="description"]', 'В данном пакете документа необходимо отразить поправку в законе о зеленых насаждениях от 12.12.2000 года.'], # Краткое содержание
-    [7, 'text', '//*[@id="reasonRegistrationNumber"]', '11-3254/90'], # Номер поручения
-    [8, 'datapicker', '//*[@id="reasonReceiveDate"]', '15082017'], # Дата поручения
-    [9, 'text', '//*[@id="reasonInitiator"]', 'Иванов В. В.'], # Инициатор
+    # [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
+    # [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
+    # [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование
+    # [6, 'text', '//*[@id="description"]', 'В данном пакете документа необходимо отразить поправку в законе о зеленых насаждениях от 12.12.2000 года.'], # Краткое содержание
+    # [7, 'text', '//*[@id="reasonRegistrationNumber"]', '11-3254/90'], # Номер поручения
+    # [8, 'datapicker', '//*[@id="reasonReceiveDate"]', '15082017'], # Дата поручения
+    # [9, 'text', '//*[@id="reasonInitiator"]', 'Иванов В. В.'], # Инициатор
     #[10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]'], # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
     [10, 'dropdown', dd_list[2], format_u[0], s_spravoch[3][0]], # Выбираем формат утверждение Заседание ПМ
     [11, 'datapicker', '//*[@id="planedReviewDate"]', '14052018'], # Заполняем планируемую дату рассмотрения 
@@ -431,34 +445,38 @@ def negative(sc):
                 sleep(1)
                 driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div/div[3]/div/div[1]').click()
                 
+                job_list = requisite(dr=org, nth=7)
+                #print(len(job_list))
+                #sleep(1.5)
+                # print(job_list[1].get_attribute('class'))
 
-
+                # lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[7]')
+                # #job_list=[]
+                # for o in range(len(org)):
+                #     org[o].click()
+                #     lists[o].click()    
+                # sleep(2)
+                
+                # lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[7]')
+                # for u in range(len(lists2)):
+                #         if lists2[u] not in lists:
+                #             job_list.append(lists2[u])
                 lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
-                #job_list=[]
-                for o in range(len(org)):
-                    org[o].click()
-                    lists[o].click()    
-                sleep(2)
-                
-                lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
-                for u in range(len(lists2)):
-                        if lists2[u] not in lists:
-                            job_list.append(lists2[u])
-                
-                lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
-                for t in range(len(job_positions)):
-                    job_positions[t].click()
-                    job_list[t].click()
-                sleep(2)
-                
-                lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
-                for u in range(len(lists2)):
-                        if lists2[u] not in lists:
-                            empls.append(lists2[u])
-                            
-                for v in range(len(emps)):
-                    emps[v].click()
-                    empls[v].click()
+                empls = requisite(dr=job_positions, ls=job_list)
+                # lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+                # for t in range(len(job_positions)):
+                #     job_positions[t].click()
+                #     job_list[t].click()
+                # sleep(2) 
+                # print(empls, lists)
+                # lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
+                # for u in range(len(lists2)):
+                #         if lists2[u] not in lists:
+                #             empls.append(lists2[u])
+                requisite(dr=emps, ls=empls)            
+                # for v in range(len(emps)):
+                #     emps[v].click()
+                #     empls[v].click()
                     
 
             if sc[x][y] == 'pop-up' and sc[x][y+1] == 'error':
