@@ -363,14 +363,14 @@ scenario_4=[
     [0, 'page', 'http://npa-dev.it2g.ru/main/dashboard'],
     [1, 'oib', user_name, password], # вводим логин и пароль
     [2, 'new_pack', 0, 0], # инициируем создание пакета.
-    # [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
-    # [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
-    # [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование
-    # [6, 'text', '//*[@id="description"]', 'В данном пакете документа необходимо отразить поправку в законе о зеленых насаждениях от 12.12.2000 года.'], # Краткое содержание
-    # [7, 'text', '//*[@id="reasonRegistrationNumber"]', '11-3254/90'], # Номер поручения
-    # [8, 'datapicker', '//*[@id="reasonReceiveDate"]', '15082017'], # Дата поручения
-    # [9, 'text', '//*[@id="reasonInitiator"]', 'Иванов В. В.'], # Инициатор
-    #[10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]'], # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
+    [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
+    [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
+    [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование
+    [6, 'text', '//*[@id="description"]', 'В данном пакете документа необходимо отразить поправку в законе о зеленых насаждениях от 12.12.2000 года.'], # Краткое содержание
+    [7, 'text', '//*[@id="reasonRegistrationNumber"]', '11-3254/90'], # Номер поручения
+    [8, 'datapicker', '//*[@id="reasonReceiveDate"]', '15082017'], # Дата поручения
+    [9, 'text', '//*[@id="reasonInitiator"]', 'Иванов В. В.'], # Инициатор
+    [10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]'], # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
     [10, 'dropdown', dd_list[2], format_u[0], s_spravoch[3][0]], # Выбираем формат утверждение Заседание ПМ
     [11, 'datapicker', '//*[@id="planedReviewDate"]', '14052018'], # Заполняем планируемую дату рассмотрения 
     [12, 'text', '//*[@id="reviewReason"]', 'Рассмотрение необходимо провести для соблюдения поправки в законе о постановлениях правительства Мэрии г. Москвы.'], # Заполняем обоснование рассмотрение
@@ -380,9 +380,22 @@ scenario_4=[
     [16, 'requisites', 1] # основные реквизиты по 1-му сотруднику в подразделе
 ]
 
+scenario_5 = [ # создание пакета с 3-мя обязательными полями: Тип проекта, Статус, Наименование
+    [0, 'page', 'http://npa-tst.it2g.ru/main/dashboard'],
+    [1, 'oib', user_name, password], # вводим логин и пароль
+    [2, 'new_pack', 0, 0], # инициируем создание пакета.
+    [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
+    [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
+    [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование 
+    [6, 'button', 'save', '//*[@id="save-button"]'], # нажимаем Сохранить
+    [7, 'alert'], # ищем алерт, считываеем и проверяем текст алерта, нажимаем ок.
+    [8, 'check_db', 'main'], # проверить данные в бд только 3 обязательных поля.
+    [9, 'prime-doc', 'no-import'] # добавлене 1-го основного документа без импорта.
+]
+
 # Фича-лист:
 # Решено временно использовать отдельный блок действий для заполнения полей осн. реквизитов (реализовано).
-# Написать функцию для заполнения повторяющихся групп элементов, таких как осн. реквизиты.
+# Написать функцию для заполнения повторяющихся групп элементов, таких как осн. реквизиты (реализовано).
 # В этой функции должны записываться значения выбираемые при вводе и ожидаемые значения в БД
 # Реализовать обработку сценария добавления документа на вкладке состава пакета и проверку проставления версии.
 # Реализовать сценарий добавления документа через импорт файла с расширениями docx и lex
@@ -446,37 +459,9 @@ def negative(sc):
                 driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div/div[3]/div/div[1]').click()
                 
                 job_list = requisite(dr=org, nth=7)
-                #print(len(job_list))
-                #sleep(1.5)
-                # print(job_list[1].get_attribute('class'))
-
-                # lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[7]')
-                # #job_list=[]
-                # for o in range(len(org)):
-                #     org[o].click()
-                #     lists[o].click()    
-                # sleep(2)
-                
-                # lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[7]')
-                # for u in range(len(lists2)):
-                #         if lists2[u] not in lists:
-                #             job_list.append(lists2[u])
-                lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
                 empls = requisite(dr=job_positions, ls=job_list)
-                # lists = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
-                # for t in range(len(job_positions)):
-                #     job_positions[t].click()
-                #     job_list[t].click()
-                # sleep(2) 
-                # print(empls, lists)
-                # lists2 = driver.find_elements_by_xpath('//*[@id="__list"]/div[1]')
-                # for u in range(len(lists2)):
-                #         if lists2[u] not in lists:
-                #             empls.append(lists2[u])
                 requisite(dr=emps, ls=empls)            
-                # for v in range(len(emps)):
-                #     emps[v].click()
-                #     empls[v].click()
+                
                     
 
             if sc[x][y] == 'pop-up' and sc[x][y+1] == 'error':
