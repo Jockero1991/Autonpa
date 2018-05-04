@@ -1,14 +1,6 @@
-26.04.2018 01:59:42	chromedriver.exe
-26.04.2018 01:59:42	Открываем Chrome
-26.04.2018 01:59:54	condition: presence_of_element_located, locating: ID, locator: login
-26.04.2018 01:59:56	condition: presence_of_element_located, locating: ID, locator: password
-26.04.2018 01:59:56	condition: presence_of_element_located, locating: ID, locator: id1
-26.04.2018 02:00:02	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="create_list"]
-26.04.2018 02:00:03	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="creating-pack-package-of-document"]
-26.04.2018 02:00:04	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="aproval-form__result"]
-26.04.2018 02:00:09	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="aproval-form__list"]/div[1]
-26.04.2018 02:00:10	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="reviewReason"]
-26.04.2018 02:00:12	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="add-review"]
-26.04.2018 02:00:13	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="review-type__result"]
-26.04.2018 02:00:13	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="review-type__list"]/div[1]
+02.05.2018 01:25:37	chromedriver.exe
+02.05.2018 01:25:37	Открываем Chrome
+02.05.2018 01:26:12	condition: presence_of_element_located, locating: ID, locator: login
+02.05.2018 01:26:14	condition: presence_of_element_located, locating: ID, locator: password
+02.05.2018 01:26:14	condition: presence_of_element_located, locating: ID, locator: id1
 
