@@ -470,6 +470,7 @@ def negative(sc):
                 sleep(3)
                 driver.find_elements_by_class_name('add-button-big')[0].click()
                 driver.find_element_by_xpath('//*[@id="file-input"]').send_keys(os.path.abspath('Лицензионное соглашение об использовании iTunes.docx'))
+                # добавить нажатие кнопки Добавить
             
             if sc[x][y] == 'open-any-first-package':
                 wait = WebDriverWait(driver, 8)
