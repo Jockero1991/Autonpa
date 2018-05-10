@@ -391,7 +391,8 @@ scenario_5 = [ # создание пакета с 3-мя обязательны�
     # [7, 'alert'], # ищем алерт, считываеем и проверяем текст алерта, нажимаем ок.
     # [8, 'check_db', 'main'], # проверить данные в бд только 3 обязательных поля.
     [2, 'open-any-first-package'],
-    [3, 'prime-doc', 'import'] # добавлене 1-го основного документа без импорта.
+    [3, 'prime-doc', 'import'], # добавлене 1-го основного документа без импорта.
+    [4, 'button', 'add_doc', 'Сохранить изменения']
 ]
 
 # Фича-лист:
@@ -421,6 +422,8 @@ def negative(sc):
             if sc[x][y] == 'new_pack':
                 exp_values.append(cr_pack_init(sc[x][y+1], sc[x][y+2]))    
             if sc[x][y] == 'button':
+                if sc[x][y+1]=='add-doc':
+                    ms.waiting('element_to_be_clickable', 'LINK_TEXT', sc[x][y+1], 2, 0).click()
                 #print('Нажать кнопку Сохранить')
                 ms.waiting('element_to_be_clickable', 'XPATH', sc[x][y+2], 2, 0).click()
             
@@ -466,7 +469,12 @@ def negative(sc):
                 requisite(dr=emps, ls=empls)            
             
             if sc[x][y] == 'prime-doc' and sc[x][y+1] == 'import':
-                driver.find_elements_by_class_name('aside__item')[8].click()
+                #driver.get()
+                print(len(driver.find_elements_by_xpath('//*[@class="aside__wrapper"]/div/a')))
+                #driver.find_elements_by_class_name('aside__item')[7].click()
+                driver.find_elements_by_xpath('//*[@class="aside__items-wrapper"]/a')[7].click()
+                #driver.find_element_by_link_text('состав пакета').click()
+
                 sleep(3)
                 driver.find_elements_by_class_name('add-button-big')[0].click()
                 driver.find_element_by_xpath('//*[@id="file-input"]').send_keys(os.path.abspath('Лицензионное соглашение об использовании iTunes.docx'))
