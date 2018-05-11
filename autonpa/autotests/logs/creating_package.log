@@ -1,6 +1,7 @@
-09.05.2018 21:08:14	chromedriver.exe
-09.05.2018 21:08:14	Открываем Chrome
-09.05.2018 21:08:26	condition: presence_of_element_located, locating: ID, locator: login
-09.05.2018 21:08:29	condition: presence_of_element_located, locating: ID, locator: password
-09.05.2018 21:08:29	condition: presence_of_element_located, locating: ID, locator: id1
+11.05.2018 14:20:13	chromedriver.exe
+11.05.2018 14:20:13	Открываем Chrome
+11.05.2018 14:20:21	condition: presence_of_element_located, locating: ID, locator: login
+11.05.2018 14:20:23	condition: presence_of_element_located, locating: ID, locator: password
+11.05.2018 14:20:23	condition: presence_of_element_located, locating: ID, locator: id1
+11.05.2018 14:20:31	condition: element_to_be_clickable, locating: CLASS_NAME, locator: big-button
 

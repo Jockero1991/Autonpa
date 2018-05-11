@@ -383,16 +383,17 @@ scenario_4=[
 scenario_5 = [ # создание пакета с 3-мя обязательными полями: Тип проекта, Статус, Наименование
     [0, 'page', 'http://npa-tst.it2g.ru/main/dashboard'],
     [1, 'oib', user_name, password], # вводим логин и пароль
-    # [2, 'new_pack', 0, 0], # инициируем создание пакета.
-    # [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
-    # [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
-    # [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование 
-    # [6, 'button', 'save', '//*[@id="save-button"]'], # нажимаем Сохранить
-    # [7, 'alert'], # ищем алерт, считываеем и проверяем текст алерта, нажимаем ок.
-    # [8, 'check_db', 'main'], # проверить данные в бд только 3 обязательных поля.
-    [2, 'open-any-first-package'],
-    [3, 'prime-doc', 'import'], # добавлене 1-го основного документа без импорта.
-    [4, 'button', 'add_doc', 'Сохранить изменения']
+    [2, 'new_pack', 0, 0], # инициируем создание пакета.
+    [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
+    [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
+    [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование 
+    [6, 'button', 'save', '//*[@id="save-button"]'], # нажимаем Сохранить
+    [7, 'alert'], # ищем алерт, считываеем и проверяем текст алерта, нажимаем ок.
+    [8, 'check_db', 'main'], # проверить данные в бд только 3 обязательных поля.
+    #[9, 'open-any-first-package'],
+    [9, 'prime-doc', 'import'], # добавление первого основного документа без импорта.
+    [10, 'button', 'add-doc', 'big-button']
+    [11, 'check', 'prime-doc-imported']
 ]
 
 # Фича-лист:
@@ -422,10 +423,10 @@ def negative(sc):
             if sc[x][y] == 'new_pack':
                 exp_values.append(cr_pack_init(sc[x][y+1], sc[x][y+2]))    
             if sc[x][y] == 'button':
-                if sc[x][y+1]=='add-doc':
-                    ms.waiting('element_to_be_clickable', 'LINK_TEXT', sc[x][y+1], 2, 0).click()
-                #print('Нажать кнопку Сохранить')
-                ms.waiting('element_to_be_clickable', 'XPATH', sc[x][y+2], 2, 0).click()
+                if sc[x][y+1] == 'add-doc':
+                    ms.waiting('element_to_be_clickable', 'CLASS_NAME', sc[x][y+2], 2, 0).click()
+                else:
+                    ms.waiting('element_to_be_clickable', 'XPATH', sc[x][y+2], 2, 0).click()
             
             if sc[x][y] == 'dropdown':
                 exp_values.append(dropdown_feeler(sc[x][y+1], sc[x][y+2], sc[x][y+3]))
@@ -437,6 +438,13 @@ def negative(sc):
             if sc[x][y] == 'datapicker':
                 temp = f'{sc[x][y+1]}/my-date-picker/div/div/input'
                 driver.find_element_by_xpath(temp).send_keys(sc[x][y+2])
+
+            if sc[x][y] == 'check':
+                if sc[x][y+1] == 'prime-doc-imported':
+                    if len(driver.find_elements_by_class_name('item-main')) == 1:
+                        print('Найден главный документ!')
+                    else:
+                        print('Главный документ не найден! Либо найдено больше 1-го главного документа.')
 
             if sc[x][y] == 'requisites':
                 wait = WebDriverWait(driver, 10)
@@ -469,11 +477,14 @@ def negative(sc):
                 requisite(dr=emps, ls=empls)            
             
             if sc[x][y] == 'prime-doc' and sc[x][y+1] == 'import':
+                sleep(1)
                 #driver.get()
-                print(len(driver.find_elements_by_xpath('//*[@class="aside__wrapper"]/div/a')))
+                #print(len(driver.find_elements_by_xpath('//*[@id="aside__wrapper"]/div/a')))
                 #driver.find_elements_by_class_name('aside__item')[7].click()
-                driver.find_elements_by_xpath('//*[@class="aside__items-wrapper"]/a')[7].click()
-                #driver.find_element_by_link_text('состав пакета').click()
+                #driver.execute_script("var script = document.createElement('script'); script.src = 'http://code.jquery.com/jquery-1.11.0.min.js'; script.type = 'text/javascript'; document.getElementsByTagName('head')[0].appendChild(script);")
+                driver.execute_script("document.getElementById('menu-item_composition').click()")
+                #driver.find_element_by_xpath('//*[@id="menu-item_composition"]').click()
+                #driver.find_element_by_id('menu-item_composition').click()
 
                 sleep(3)
                 driver.find_elements_by_class_name('add-button-big')[0].click()
