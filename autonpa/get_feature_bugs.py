@@ -21,7 +21,10 @@ def driver(request):
     request.addfinalizer(wd.quit)
     return wd
 
-def test_main_data(driver):
+def test_main(driver):
+    search_data(driver, 1219)
+
+def search_data(driver, tasknum):
     with open('login_data.txt', 'r') as ld:
         login_data = ld.readline().split(',')
         print(login_data)
@@ -34,10 +37,14 @@ def test_main_data(driver):
     sleep(2)
     test = driver.find_element_by_id('advanced-search').get_attribute('value')
     driver.find_element_by_id('advanced-search').clear()
-    new_val='project = NPA AND issuetype = Bug AND issue in linkedIssues(NPA-1219) AND status != Закрыт'
+    new_val=f'project = NPA AND issuetype = Bug AND issue in linkedIssues(NPA-{str(tasknum)}) AND status != Закрыт'
     driver.find_element_by_id('advanced-search').send_keys(new_val)
     driver.find_elements_by_class_name('aui-icon')[8].click()
     sleep(2)
+    return get_bugs_data(driver)
     
 def get_bugs_data(driver):
-    pass
+    bugnums = []
+    bugnums = driver.find_elements_by_class_name('issue-link')
+    bugnums = [x.text for x in bugnums]
+    print(bugnums)

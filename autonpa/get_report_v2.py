@@ -165,14 +165,3 @@ def write_data(data, path, trigger='headers', end = False):
                 writer.writerow(line)
         if end:
             csv_file.close()
-
-def read_data(path, assert_data):
-    reading_txt=[]
-    with open(path, "r") as csv_file:
-        reader = csv.DictReader(csv_file, delimiter=',')
-        #print(reader[0])
-        for line in reader:
-            reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик"])
-    
-    for x in range(len(reading_txt)):
-        assert reading_txt[x] == assert_data[x][0]
