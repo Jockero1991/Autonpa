@@ -37,6 +37,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from time import sleep
 import os
 import random
@@ -212,7 +213,7 @@ statuses = ['//*[@id="status-project__list"]/div[1]' # Плановый
 
 s_spravoch = [['DOCUMENT_PACKAGE', 'REPORT', 'ABOUT_MAKING_CHANGES'], # - значения типов проектов в БД
 [1, 2, 3, 4, 5, 6], # - значения типов проектов в БД
-[1, 2, 3, 4], # - значения статусов в БД.
+['PLANED', 'BY_ASSIGNMENT', 'INITIATIVE', 'GZK'], # - значения статусов в БД.
 [1, 2, 3, 4], # - значения формата утверждения в БД
 [1, 2, 3, 4, 5], # Тип рассмотрения в БД
 [10],  # Далеко не все значения справочника организаций...
@@ -234,6 +235,9 @@ os.environ['webdriver.chrome.driver'] = chromedriver
 myLogging(f, 'Открываем Chrome')
 chrome_options = Options()
 chrome_options.add_argument("--window-size=1920,1080")
+caps=DesiredCapabilities.CHROME
+#caps['loggingPrefs']={'browser': 'ALL'}
+caps['loggingPrefs'] = {'performance': 'ALL'}
 
 #driver = wd.Chrome(chrome_options=chrom e_options)
 
@@ -302,6 +306,14 @@ def requisite(dr, ls=None, nth=1):
             res.append(lists2[u])
     #print(len(res))
     return res
+
+def get_browser_logs(typ):
+    print('запущена функция печати логов...')
+    for l in driver.get_log(typ):
+        print(l)
+
+def get_uch_num_pack_doc():
+    return exp_values.append(ms.waiting('presence_of_element_located', 'XPATH', "/html/body/app-root/app-documents/div/div[2]/div[1]/div/div[1]/span", 2, 0).text)
 
 # Составить список ожидаемых значений
 # Передать его в метод db_check 
@@ -392,7 +404,7 @@ scenario_5 = [ # создание пакета с 3-мя обязательны�
     [8, 'check_db', 'main'], # проверить данные в бд только 3 обязательных поля.
     #[9, 'open-any-first-package'],
     [9, 'prime-doc', 'import'], # добавление первого основного документа без импорта.
-    [10, 'button', 'add-doc', 'big-button']
+    [10, 'button', 'add-doc', 'big-button'],
     [11, 'check', 'prime-doc-imported']
 ]
 
@@ -401,6 +413,7 @@ scenario_5 = [ # создание пакета с 3-мя обязательны�
 # Написать функцию для заполнения повторяющихся групп элементов, таких как осн. реквизиты (реализовано).
 # В этой функции должны записываться значения выбираемые при вводе и ожидаемые значения в БД
 # Реализовать обработку сценария добавления документа на вкладке состава пакета и проверку проставления версии.
+# Реализовать проверку добавления документа перехватом запроса с телом
 # Реализовать сценарий добавления документа через импорт файла с расширениями docx и lex
 # Реализовать сценарий добавления комментария на вкладке Состав пакета.
 # Реализовать сценарий удаления комментария 
@@ -409,7 +422,9 @@ def negative(sc):
     stack_result = []
     stack_errors = []
     exp_values = []
+    
     for x in range(len(sc)):
+        #get_browser_logs('performance')
         for y in range(len(sc[x])):
 
             if sc[x][y] =='oib':
@@ -425,8 +440,10 @@ def negative(sc):
             if sc[x][y] == 'button':
                 if sc[x][y+1] == 'add-doc':
                     ms.waiting('element_to_be_clickable', 'CLASS_NAME', sc[x][y+2], 2, 0).click()
+                    sleep(1)
                 else:
                     ms.waiting('element_to_be_clickable', 'XPATH', sc[x][y+2], 2, 0).click()
+                    sleep(1)
             
             if sc[x][y] == 'dropdown':
                 exp_values.append(dropdown_feeler(sc[x][y+1], sc[x][y+2], sc[x][y+3]))
@@ -441,10 +458,24 @@ def negative(sc):
 
             if sc[x][y] == 'check':
                 if sc[x][y+1] == 'prime-doc-imported':
-                    if len(driver.find_elements_by_class_name('item-main')) == 1:
+                    #Проверяем добавился ли документ на страницу...
+                    print('Проверяем добавился ли документ на страницу...')
+                    if len(driver.find_elements_by_class_name('item-main')) == 2:
                         print('Найден главный документ!')
+                        result = []
+                        errors=[]
+                        uch_num = get_uch_num_pack_doc()
+                        with ps.open(db_conn) as db:
+                            id_value = db.query("select le.id from lde_event le join document d on d.id=le.document_id join document_package dp on d.document_package_id=dp.id where dp.document_package_number='%s')" % uch_num)[0][0]
+                            if id_value is not 'Null':
+                                print()
                     else:
-                        print('Главный документ не найден! Либо найдено больше 1-го главного документа.')
+                        #print('Главный документ не найден! Либо найдено больше 1-го главного документа.')
+                        count = len(driver.find_elements_by_class_name('item-main'))
+                        if len(driver.find_elements_by_class_name('item-main')) > 2:
+                            errors.append(f'Найдено больше одного документа. Документов на странице: {count}')
+                        return errors
+                    
 
             if sc[x][y] == 'requisites':
                 wait = WebDriverWait(driver, 10)
@@ -477,18 +508,14 @@ def negative(sc):
                 requisite(dr=emps, ls=empls)            
             
             if sc[x][y] == 'prime-doc' and sc[x][y+1] == 'import':
+                # переход по ссылке Состав пакета
                 sleep(1)
-                #driver.get()
-                #print(len(driver.find_elements_by_xpath('//*[@id="aside__wrapper"]/div/a')))
-                #driver.find_elements_by_class_name('aside__item')[7].click()
-                #driver.execute_script("var script = document.createElement('script'); script.src = 'http://code.jquery.com/jquery-1.11.0.min.js'; script.type = 'text/javascript'; document.getElementsByTagName('head')[0].appendChild(script);")
                 driver.execute_script("document.getElementById('menu-item_composition').click()")
-                #driver.find_element_by_xpath('//*[@id="menu-item_composition"]').click()
-                #driver.find_element_by_id('menu-item_composition').click()
 
                 sleep(3)
                 driver.find_elements_by_class_name('add-button-big')[0].click()
                 driver.find_element_by_xpath('//*[@id="file-input"]').send_keys(os.path.abspath('Лицензионное соглашение об использовании iTunes.docx'))
+                sleep(1)
                 # добавить нажатие кнопки Добавить
             
             if sc[x][y] == 'open-any-first-package':
@@ -524,9 +551,9 @@ def negative(sc):
                     with ps.open(db_conn) as db:
                         db_value.append(db.query("SELECT count(*) FROM document_package WHERE document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Считаем кол-во пакетов с таким же учетным номером
                         db_value.append(db.query("SELECT package_type FROM document_package WHERE document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Тип пакета
-                        db_value.append(db.query("SELECT n.project_type_id FROM npa n left join document_package dp on n.document_package_id=dp.id where dp.document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Тип проекта
-                        db_value.append(db.query("SELECT n.status FROM npa n left join document_package dp on n.document_package_id=dp.id where dp.document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Статус
-                        db_value.append(db.query("SELECT n.name FROM npa n left join document_package dp on n.document_package_id=dp.id where dp.document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Наименование
+                        db_value.append(db.query("SELECT project_type_id FROM document_package where document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Тип проекта
+                        db_value.append(db.query("SELECT status FROM document_package where document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Статус
+                        db_value.append(db.query("SELECT name FROM document_package where document_package_number = '%s'" % exp_values[len(exp_values) - 1])[0][0]) # Наименование
                 
                 
                 if 'review-date' in sc[x]:
@@ -573,14 +600,14 @@ def negative(sc):
                     
                     stack_result.append(1)
                 else:
-                    print(db_value[1], exp_values[0])
+                    #print(db_value[1], exp_values[0])
                     stack_errors.append('Сохраненное значение типа пакета в БД не ОК: ' + str(db_value[1]))
 
                 if db_value[2] == exp_values[1]:
                     stack_result.append(1)
                 else:
                     stack_errors.append('Тип проекта сохранился в БД не ОК ' + str(db_value[2]))
-
+                #print(db_value[3], exp_values[2])
                 if db_value[3] == exp_values[2]:
                     stack_result.append(1)
                 else:
@@ -599,5 +626,5 @@ def negative(sc):
 
 
 # Запускаем тестовый сценарий
-driver = wd.Chrome(chrome_options=chrome_options)
+driver = wd.Chrome(chrome_options=chrome_options, desired_capabilities = caps)
 negative(scenario_5)
