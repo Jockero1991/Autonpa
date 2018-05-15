@@ -266,7 +266,7 @@ def alert_passer():
     sleep(4)
     try:
         alert = driver.switch_to_alert()
-        if alert.text == "Данные сохранены успешно":
+        if alert.text == "Данные сохранены успешно.":
             print(alert.text)
             alert.accept()
             return True
@@ -313,7 +313,7 @@ def get_browser_logs(typ):
         print(l)
 
 def get_uch_num_pack_doc():
-    return exp_values.append(ms.waiting('presence_of_element_located', 'XPATH', "/html/body/app-root/app-documents/div/div[2]/div[1]/div/div[1]/span", 2, 0).text)
+    return ms.waiting('presence_of_element_located', 'XPATH', "//*[@id='uch-num']", 2, 0).text
 
 # Составить список ожидаемых значений
 # Передать его в метод db_check 
@@ -458,22 +458,32 @@ def negative(sc):
 
             if sc[x][y] == 'check':
                 if sc[x][y+1] == 'prime-doc-imported':
+                    
                     #Проверяем добавился ли документ на страницу...
                     print('Проверяем добавился ли документ на страницу...')
                     if len(driver.find_elements_by_class_name('item-main')) == 2:
                         print('Найден главный документ!')
                         result = []
-                        errors=[]
+                        #Получаем учетный номер пакета
                         uch_num = get_uch_num_pack_doc()
+                        
+                        
+                        # Подключаемся к бд и раз в секунду проверяем значение id документа
                         with ps.open(db_conn) as db:
-                            id_value = db.query("select le.id from lde_event le join document d on d.id=le.document_id join document_package dp on d.document_package_id=dp.id where dp.document_package_number='%s')" % uch_num)[0][0]
-                            if id_value is not 'Null':
-                                print()
+                            id_value = ''
+                            while(id_value==''):
+                                sleep(1)
+                                id_value = db.query("select le.id from lde_event le join document d on d.id=le.document_id join document_package dp on d.document_package_id=dp.id where dp.document_package_number='%s'" % uch_num)[0][0]
+                                if id_value is not 'Null':
+                                    print(f'В БД получена id документа: {id_value}')
+                                else:
+                                    print('id документа не получена')
                     else:
                         #print('Главный документ не найден! Либо найдено больше 1-го главного документа.')
+                        errors=[]
                         count = len(driver.find_elements_by_class_name('item-main'))
                         if len(driver.find_elements_by_class_name('item-main')) > 2:
-                            errors.append(f'Найдено больше одного документа. Документов на странице: {count}')
+                            errors.append(f'Найдено больше одного документа. Документов на странице: {count-1}') # Отнимаем 1 т.к. элемент в доп. материалах тоже попадает под выборку.
                         return errors
                     
 
@@ -539,13 +549,14 @@ def negative(sc):
                 ms.waiting('element_to_be_clickable', 'CLASS_NAME', sc[x][-1], 2, 0).click()
 
             if sc[x][y] == 'alert':
+                #sleep(0.5)
                 if alert_passer():
                     pass
                 else:
                     print('Тест провалился при проверке текста алерта')
             if sc[x][y] == 'check_db':
                 db_value = []
-                exp_values.append(ms.waiting('presence_of_element_located', 'XPATH', "/html/body/app-root/app-documents/div/div[2]/div[1]/div/div[1]/span", 2, 0).text)
+                exp_values.append(ms.waiting('presence_of_element_located', 'XPATH', "//*[@id='uch-num']", 2, 0).text)
                 print(exp_values[len(exp_values) - 1])
                 if 'main' in sc[x]:
                     with ps.open(db_conn) as db:
