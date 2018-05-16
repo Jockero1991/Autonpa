@@ -1,16 +1,17 @@
-14.05.2018 17:55:04	chromedriver.exe
-14.05.2018 17:55:04	Открываем Chrome
-14.05.2018 17:55:11	condition: presence_of_element_located, locating: ID, locator: login
-14.05.2018 17:55:12	condition: presence_of_element_located, locating: ID, locator: password
-14.05.2018 17:55:12	condition: presence_of_element_located, locating: ID, locator: id1
-14.05.2018 17:55:14	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="create_list"]
-14.05.2018 17:55:15	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="creating-pack-package-of-document"]
-14.05.2018 17:55:15	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__result"]
-14.05.2018 17:55:17	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__list"]/div[1]
-14.05.2018 17:55:17	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__result"]
-14.05.2018 17:55:17	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__list"]/div[1]
-14.05.2018 17:55:17	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="name"]
-14.05.2018 17:55:17	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="save-button"]
-14.05.2018 17:55:23	condition: presence_of_element_located, locating: XPATH, locator: /html/body/app-root/app-documents/div/div[2]/div[1]/div/div[1]/span
-14.05.2018 17:55:28	condition: element_to_be_clickable, locating: CLASS_NAME, locator: big-button
+15.05.2018 18:57:41	chromedriver.exe
+15.05.2018 18:57:41	Открываем Chrome
+15.05.2018 18:57:48	condition: presence_of_element_located, locating: ID, locator: login
+15.05.2018 18:57:49	condition: presence_of_element_located, locating: ID, locator: password
+15.05.2018 18:57:49	condition: presence_of_element_located, locating: ID, locator: id1
+15.05.2018 18:57:51	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="create_list"]
+15.05.2018 18:57:52	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="creating-pack-package-of-document"]
+15.05.2018 18:57:52	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__result"]
+15.05.2018 18:57:54	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__list"]/div[1]
+15.05.2018 18:57:54	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__result"]
+15.05.2018 18:57:54	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__list"]/div[1]
+15.05.2018 18:57:54	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="name"]
+15.05.2018 18:57:55	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="save-button"]
+15.05.2018 18:58:00	condition: presence_of_element_located, locating: XPATH, locator: //*[@id='uch-num']
+15.05.2018 18:58:06	condition: element_to_be_clickable, locating: CLASS_NAME, locator: big-button
+15.05.2018 18:58:07	condition: presence_of_element_located, locating: XPATH, locator: //*[@id='uch-num']
 
