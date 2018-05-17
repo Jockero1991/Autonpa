@@ -44,7 +44,24 @@ def search_data(driver, tasknum):
     return get_bugs_data(driver)
     
 def get_bugs_data(driver):
-    bugnums = []
-    bugnums = driver.find_elements_by_class_name('issue-link')
-    bugnums = [x.text for x in bugnums]
+    bugs, bugnums, sum =[], [], []
+
+    bugs = driver.find_elements_by_class_name('issue-link')
+    bugs = [x.text for x in bugs]
+    bugs = list(filter(lambda x: x!='', bugs))
+
+    # Разделяем номер бага и тему бага
+    sum = [bugs[x] for x in range(1, len(bugs), 2)]
+    bugnums = [bugs[x] for x in range(0, len(bugs), 2)]
+
+    # Чистим значение переменной, для уменьшения используемой памяти. Спросить Дениса надо ли так делать?
+    bugs = []
+
+    # Статус бага
+    # Приоритет бага
+    # Исполнитель бага
+
+
+    #print(bugs)
+    print(sum)
     print(bugnums)
