@@ -1,17 +1,9 @@
-15.05.2018 18:57:41	chromedriver.exe
-15.05.2018 18:57:41	Открываем Chrome
-15.05.2018 18:57:48	condition: presence_of_element_located, locating: ID, locator: login
-15.05.2018 18:57:49	condition: presence_of_element_located, locating: ID, locator: password
-15.05.2018 18:57:49	condition: presence_of_element_located, locating: ID, locator: id1
-15.05.2018 18:57:51	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="create_list"]
-15.05.2018 18:57:52	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="creating-pack-package-of-document"]
-15.05.2018 18:57:52	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__result"]
-15.05.2018 18:57:54	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="type-project__list"]/div[1]
-15.05.2018 18:57:54	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__result"]
-15.05.2018 18:57:54	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="status-project__list"]/div[1]
-15.05.2018 18:57:54	condition: presence_of_element_located, locating: XPATH, locator: //*[@id="name"]
-15.05.2018 18:57:55	condition: element_to_be_clickable, locating: XPATH, locator: //*[@id="save-button"]
-15.05.2018 18:58:00	condition: presence_of_element_located, locating: XPATH, locator: //*[@id='uch-num']
-15.05.2018 18:58:06	condition: element_to_be_clickable, locating: CLASS_NAME, locator: big-button
-15.05.2018 18:58:07	condition: presence_of_element_located, locating: XPATH, locator: //*[@id='uch-num']
+18.05.2018 14:26:59	chromedriver.exe
+18.05.2018 14:26:59	Открываем Chrome
+18.05.2018 14:27:07	condition: presence_of_element_located, locating: ID, locator: login
+18.05.2018 14:27:10	 Элемента не обнаружено. 
+ condition: presence_of_element_located 
+ locating: ID
+ locator: login 
+ timeout: 3
 
