@@ -9,7 +9,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from time import sleep
 import pytest
-import csv
+from openpyxl import load_workbook as lw
+from openpyxl import Workbook
+from openpyxl.compat import range
+from openpyxl.utils import get_column_letter
 
 @pytest.fixture
 def driver(request):
@@ -22,7 +25,10 @@ def driver(request):
     return wd
 
 def test_main(driver):
-    search_data(driver, 1219)
+    bgs = search_data(driver, 1219)
+    iss = tsk_data(driver, 'NPA-1219')
+    write_to_xls(iss, bgs)
+
 
 def search_data(driver, tasknum):
     with open('login_data.txt', 'r') as ld:
@@ -44,24 +50,86 @@ def search_data(driver, tasknum):
     return get_bugs_data(driver)
     
 def get_bugs_data(driver):
-    bugs, bugnums, sum =[], [], []
+    bugs, bugnums, summ =[], [], []
 
     bugs = driver.find_elements_by_class_name('issue-link')
     bugs = [x.text for x in bugs]
     bugs = list(filter(lambda x: x!='', bugs))
 
     # Разделяем номер бага и тему бага
-    sum = [bugs[x] for x in range(1, len(bugs), 2)]
+    summ = [bugs[x] for x in range(1, len(bugs), 2)]
     bugnums = [bugs[x] for x in range(0, len(bugs), 2)]
 
-    # Чистим значение переменной, для уменьшения используемой памяти. Спросить Дениса надо ли так делать?
-    bugs = []
-
     # Статус бага
+    stat = driver.find_elements_by_class_name('status')
+    stat = [x.text for x in stat]
+
     # Приоритет бага
+    pr = driver.find_elements_by_xpath('//*[@class="priority"]/img')
+    pr = [x.get_attribute('alt') for x in pr]
+
     # Исполнитель бага
+    assign = driver.find_elements_by_class_name('assignee')
+    assign = [x.text for x in assign]
+    
+    # Объединить данные в один массив
+    result = [[] for x in range(len(bugnums))]
+    # print(len(bugnums))
+    
+    for y in range(len(bugnums)):
+        result[y].append(bugnums[y])
+        result[y].append(summ[y])
+        result[y].append(stat[y])
+        result[y].append(pr[y])
+        result[y].append(assign[y])         
+
+    #Результаты в консоли
+    #print(result)
+
+    return result
+
+# Запись в файл эксель данных по задаче и по связанным багам
+def write_to_xls(task, bugs):
+    headers = [
+        '№ задачи Jira', 
+        'Приоритет',
+        'Тема:', 
+        'Статус', 
+        'Тестировщик', 
+        'Комментарий', 
+        '№ бага', 
+        'Тема',  
+        'Статус', 
+        'Приоритет', 
+        'Исполнитель', 
+        'Можно перенести']
+    # Файл назовем как-нибудь
+    file_name = 'Тестовая таблица.xlsx'
+    # Запишем заголовки в файл
+    wb = Workbook()
+    ws1 = wb.active
+    ws1.title = "TEST"
+    for row in range(2, 3):
+        for col in range(0, len(headers)):
+            _ = ws1.cell(column=col+1, row=row, value=headers[col])
+    for row in range(3, 4):
+        for col in range(0, len(headers)-7):
+            print(len(headers), len(task))        
+            _ = ws1.cell(column=col+1, row=row, value = task[col])
+            for b in range(len(bugs)):
+                _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
+    wb.save(filename = file_name)
 
 
-    #print(bugs)
-    print(sum)
-    print(bugnums)
+# Собираем данные о задаче возвращаем №, приоритет, статус, тему, QA
+def tsk_data(driver, issue):
+    task_res = []
+    driver.get(f'http://jira.it2g.ru/browse/{issue}')
+    task_res.append(issue)
+    task_res.append(str(driver.find_element_by_id('priority-val').text))
+    task_res.append(str(driver.find_element_by_id('status-val').text))
+    task_res.append(str(driver.find_element_by_id('summary-val').text))
+    task_res.append(str(driver.find_element_by_xpath('//*[@id="customfield_10201-val"]/span').text))
+    print(task_res)
+    return task_res
+
