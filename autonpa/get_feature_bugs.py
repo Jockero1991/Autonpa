@@ -109,15 +109,23 @@ def write_to_xls(task, bugs):
     wb = Workbook()
     ws1 = wb.active
     ws1.title = "TEST"
-    for row in range(2, 3):
-        for col in range(0, len(headers)):
-            _ = ws1.cell(column=col+1, row=row, value=headers[col])
-    for row in range(3, 4):
-        for col in range(0, len(headers)-7):
-            print(len(headers), len(task))        
-            _ = ws1.cell(column=col+1, row=row, value = task[col])
-            for b in range(len(bugs)):
-                _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
+    quan_h = ['Кол-во багов: ', str(len(bugs))]
+    print(quan_h)
+    for i in range(2, 5):
+
+        for row in range(i, 3):
+            for col in range(0, len(headers)):
+                _ = ws1.cell(column=col+1, row=row, value=headers[col])
+        for row in range(i+1, 4):
+            for col in range(0, len(headers)-7):
+                # print(len(headers), len(task))        
+                _ = ws1.cell(column=col+1, row=row, value = task[col])
+                for b in range(len(bugs)):
+                    _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
+        for row in range(i+2, 5):
+            for col in range(0, 2):
+                # print(len(headers), len(task))        
+                _ = ws1.cell(column=col+1, row=row, value = quan_h[col])
     wb.save(filename = file_name)
 
 
