@@ -12,7 +12,7 @@ import pytest
 from openpyxl import load_workbook as lw
 from openpyxl import Workbook
 from openpyxl.compat import range
-from openpyxl.utils import get_column_letter
+
 
 @pytest.fixture
 def driver(request):
@@ -24,13 +24,15 @@ def driver(request):
     request.addfinalizer(wd.quit)
     return wd
 
-def test_main(driver):
-    bgs = search_data(driver, 1219)
-    iss = tsk_data(driver, 'NPA-1219')
-    write_to_xls(iss, bgs)
+def cr_file_xls(filename):
+   wb = Workbook()
+   ws1=wb.active
+   ws1.title = "TEST"
+   wb.save(filename = filename)
+   return filename
 
-
-def search_data(driver, tasknum):
+# Функция возвращает массив задач по фильтру Готово к тестированию
+def get_tasks_in_test(driver):
     with open('login_data.txt', 'r') as ld:
         login_data = ld.readline().split(',')
         print(login_data)
@@ -39,11 +41,40 @@ def search_data(driver, tasknum):
     driver.find_element_by_id('login-form-username').send_keys(login_data[0])
     driver.find_element_by_id('login-form-password').send_keys(login_data[1])
     driver.find_element_by_id('login-form-submit').click()
+
+    # Открываем фильтр Готово к тестированию
+    driver.get('http://jira.it2g.ru/issues/?filter=10472')
+    issues = driver.find_elements_by_class_name('issue-link')
+    issues = [x.text for x in issues]
+    issues = list(filter(lambda x: x!='', issues))
+    issues = [issues[x] for x in range(0, len(issues), 2)]
+    print(issues)
+    return issues
+
+
+# Отсюда вызываем все функции
+def test_main(driver):
+    fn = cr_file_xls("Тестовая таблица.xlsx")
+    tsk_list = []
+    tsk_list = get_tasks_in_test(driver)
+    for u in range(len(tsk_list)):
+        try:
+            bgs = search_data(driver, tsk_list[u])
+        except:
+            print('Связанных багов нет.')
+            bgs = []
+        iss = tsk_data(driver, tsk_list[u])
+        write_to_xls(iss, bgs, fn)
+
+
+def search_data(driver, tasknum):
+
+    # Открываем фильтр по багам связанным с задачей.
     driver.get('http://jira.it2g.ru/issues/?filter=10480')
     sleep(2)
-    test = driver.find_element_by_id('advanced-search').get_attribute('value')
+    # test = driver.find_element_by_id('advanced-search').get_attribute('value')
     driver.find_element_by_id('advanced-search').clear()
-    new_val=f'project = NPA AND issuetype = Bug AND issue in linkedIssues(NPA-{str(tasknum)}) AND status != Закрыт'
+    new_val=f'project = NPA AND issuetype = Bug AND issue in linkedIssues({str(tasknum)}) AND status != Закрыт'
     driver.find_element_by_id('advanced-search').send_keys(new_val)
     driver.find_elements_by_class_name('aui-icon')[8].click()
     sleep(2)
@@ -89,7 +120,7 @@ def get_bugs_data(driver):
     return result
 
 # Запись в файл эксель данных по задаче и по связанным багам
-def write_to_xls(task, bugs):
+def write_to_xls(task, bugs, df):
     headers = [
         '№ задачи Jira', 
         'Приоритет',
@@ -103,15 +134,14 @@ def write_to_xls(task, bugs):
         'Приоритет', 
         'Исполнитель', 
         'Можно перенести']
-    # Файл назовем как-нибудь
-    file_name = 'Тестовая таблица.xlsx'
+
     # Запишем заголовки в файл
-    wb = Workbook()
-    ws1 = wb.active
-    ws1.title = "TEST"
+    wb = lw(df)
+    ws1 = wb["TEST"]
+
     quan_h = ['Кол-во багов: ', str(len(bugs))]
-    print(quan_h)
-    for i in range(2, 5):
+    #print(len(task))
+    for i in range(2, len(task)+len(bugs)):
 
         for row in range(i, 3):
             for col in range(0, len(headers)):
@@ -120,19 +150,26 @@ def write_to_xls(task, bugs):
             for col in range(0, len(headers)-7):
                 # print(len(headers), len(task))        
                 _ = ws1.cell(column=col+1, row=row, value = task[col])
-                for b in range(len(bugs)):
-                    _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
+                if bugs == []:
+                    pass
+
+                else:
+                    for b in range(len(bugs)):
+                        _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
         for row in range(i+2, 5):
             for col in range(0, 2):
                 # print(len(headers), len(task))        
                 _ = ws1.cell(column=col+1, row=row, value = quan_h[col])
-    wb.save(filename = file_name)
+    wb.save(filename = df)
 
 
 # Собираем данные о задаче возвращаем №, приоритет, статус, тему, QA
 def tsk_data(driver, issue):
     task_res = []
-    driver.get(f'http://jira.it2g.ru/browse/{issue}')
+    print(issue)
+    sleep(3)
+    driver.get(f'http://jira.it2g.ru/browse/{str(issue)}')
+
     task_res.append(issue)
     task_res.append(str(driver.find_element_by_id('priority-val').text))
     task_res.append(str(driver.find_element_by_id('status-val').text))
