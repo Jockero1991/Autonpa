@@ -31,8 +31,7 @@ def cr_file_xls(filename):
    wb.save(filename = filename)
    return filename
 
-# Функция возвращает массив задач по фильтру Готово к тестированию
-def get_tasks_in_test(driver):
+def login(driver):
     with open('login_data.txt', 'r') as ld:
         login_data = ld.readline().split(',')
         print(login_data)
@@ -42,6 +41,8 @@ def get_tasks_in_test(driver):
     driver.find_element_by_id('login-form-password').send_keys(login_data[1])
     driver.find_element_by_id('login-form-submit').click()
 
+# Функция возвращает массив задач по фильтру Готово к тестированию
+def get_tasks_in_test(driver):
     # Открываем фильтр Готово к тестированию
     driver.get('http://jira.it2g.ru/issues/?filter=10472')
     issues = driver.find_elements_by_class_name('issue-link')
@@ -51,12 +52,15 @@ def get_tasks_in_test(driver):
     print(issues)
     return issues
 
+test_arr = ['NPA-1219', 'NPA-1429']
 
 # Отсюда вызываем все функции
 def test_main(driver):
     fn = cr_file_xls("Тестовая таблица.xlsx")
+    login(driver)
     tsk_list = []
-    tsk_list = get_tasks_in_test(driver)
+    counter = 0
+    tsk_list = test_arr #get_tasks_in_test(driver)
     for u in range(len(tsk_list)):
         try:
             bgs = search_data(driver, tsk_list[u])
@@ -64,7 +68,8 @@ def test_main(driver):
             print('Связанных багов нет.')
             bgs = []
         iss = tsk_data(driver, tsk_list[u])
-        write_to_xls(iss, bgs, fn)
+        counter = write_to_xls(iss, bgs, fn, counter)
+        print(counter)
 
 
 def search_data(driver, tasknum):
@@ -120,7 +125,7 @@ def get_bugs_data(driver):
     return result
 
 # Запись в файл эксель данных по задаче и по связанным багам
-def write_to_xls(task, bugs, df):
+def write_to_xls(task, bugs, df, lr=0):
     headers = [
         '№ задачи Jira', 
         'Приоритет',
@@ -138,29 +143,33 @@ def write_to_xls(task, bugs, df):
     # Запишем заголовки в файл
     wb = lw(df)
     ws1 = wb["TEST"]
-
+    
     quan_h = ['Кол-во багов: ', str(len(bugs))]
     #print(len(task))
-    for i in range(2, len(task)+len(bugs)):
+    for i in range(lr, 2*len(task)+len(bugs)):
 
         for row in range(i, 3):
             for col in range(0, len(headers)):
                 _ = ws1.cell(column=col+1, row=row, value=headers[col])
         for row in range(i+1, 4):
             for col in range(0, len(headers)-7):
-                # print(len(headers), len(task))        
+                # Записываем данные по задаче       
                 _ = ws1.cell(column=col+1, row=row, value = task[col])
+                 
                 if bugs == []:
-                    pass
-
+                    lr = row+2
                 else:
+                    # Записываем данные по багам
                     for b in range(len(bugs)):
                         _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
+                    lr = row+len(bugs)
         for row in range(i+2, 5):
             for col in range(0, 2):
-                # print(len(headers), len(task))        
+                # Кол-во багов под данныами по задаче      
                 _ = ws1.cell(column=col+1, row=row, value = quan_h[col])
     wb.save(filename = df)
+    
+    return lr
 
 
 # Собираем данные о задаче возвращаем №, приоритет, статус, тему, QA
