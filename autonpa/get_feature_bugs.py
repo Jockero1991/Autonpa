@@ -47,7 +47,7 @@ def get_tasks_in_test(driver):
 
 test_arr = ['NPA-1219', 'NPA-1429']
 
-# Отсюда вызываем все функции
+# Отсюда вызываем все функции этого модуля
 def test_main(driver):
     fn = cr_file_xls("Тестовая таблица.xlsx")
     login(driver)

@@ -14,8 +14,8 @@
       <file leaf-file-name="test_pyxl_lib.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test_pyxl_lib.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="31" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="31" />
+            <state relative-caret-position="105">
+              <caret line="7" column="85" lean-forward="true" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="85" />
               <folding>
                 <element signature="e#0#40#0" expanded="true" />
               </folding>
@@ -26,8 +26,8 @@
       <file leaf-file-name="get_feature_bugs.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/get_feature_bugs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1875">
-              <caret line="134" column="47" selection-start-line="134" selection-start-column="47" selection-end-line="134" selection-end-column="47" />
+            <state relative-caret-position="945">
+              <caret line="63" column="53" lean-forward="true" selection-start-line="53" selection-start-column="4" selection-end-line="63" selection-end-column="53" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -38,8 +38,8 @@
       <file leaf-file-name="get_task_data.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/get_task_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
-              <caret line="156" column="79" selection-start-line="156" selection-start-column="79" selection-end-line="156" selection-end-column="79" />
+            <state relative-caret-position="336">
+              <caret line="72" column="33" selection-start-line="72" selection-start-column="33" selection-end-line="72" selection-end-column="33" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -61,9 +61,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/test_pyxl_lib.py" />
         <option value="$PROJECT_DIR$/autotests/cr_pack.py" />
         <option value="$PROJECT_DIR$/get_feature_bugs.py" />
+        <option value="$PROJECT_DIR$/test_pyxl_lib.py" />
         <option value="$PROJECT_DIR$/get_task_data.py" />
       </list>
     </option>
@@ -285,30 +285,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_pyxl_lib.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="31" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/get_feature_bugs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1875">
-          <caret line="134" column="47" selection-start-line="134" selection-start-column="47" selection-end-line="134" selection-end-column="47" />
+        <state relative-caret-position="945">
+          <caret line="63" column="53" lean-forward="true" selection-start-line="53" selection-start-column="4" selection-end-line="63" selection-end-column="53" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test_pyxl_lib.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="85" lean-forward="true" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="85" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/get_task_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="156" column="79" selection-start-line="156" selection-start-column="79" selection-end-line="156" selection-end-column="79" />
+        <state relative-caret-position="336">
+          <caret line="72" column="33" selection-start-line="72" selection-start-column="33" selection-end-line="72" selection-end-column="33" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>

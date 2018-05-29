@@ -15,6 +15,7 @@ from openpyxl import Workbook
 from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
 from test_pyxl_lib import pyxl
+import get_feature_bugs as gtb
 
 @pytest.fixture
 def driver(request):
@@ -33,14 +34,14 @@ def driver(request):
 filters_npa = [
 ["10765",  # задачи в разработке
 "10766", # задачи в аналитике
-"10769", # задачи в тестировании
+#"10769", # задачи в тестировании
 "10767", # закрытые задачи
 "10770", # Открытые баги
 "10772", # Закрытые баги
 "10773"  # Отложенные задачи
 ],
  ['data\в_разработке.csv', 'data\в_аналитике.csv',
- 'data\в_тестировании.csv',
+ #'data\в_тестировании.csv',
  'data\закрытые_задачи.csv',
  'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
   ],
@@ -52,23 +53,37 @@ filters_npa = [
  ]
 
 def test_main(driver):
-    #login_data=[]
-    with open('login_data.txt', 'r') as ld:
-        login_data = ld.readline().split(',')
-        print(login_data)
-    #login
-    driver.get('http://jira.it2g.ru/login.jsp')
-    driver.find_element_by_id('login-form-username').send_keys(login_data[0])
-    driver.find_element_by_id('login-form-password').send_keys(login_data[1])
-    driver.find_element_by_id('login-form-submit').click()
-
+    # #login_data=[]
+    # with open('login_data.txt', 'r') as ld:
+    #     login_data = ld.readline().split(',')
+    #     print(login_data)
+    # #login
+    # driver.get('http://jira.it2g.ru/login.jsp')
+    # driver.find_element_by_id('login-form-username').send_keys(login_data[0])
+    # driver.find_element_by_id('login-form-password').send_keys(login_data[1])
+    # driver.find_element_by_id('login-form-submit').click()
+    gtb.login(driver)
     driver.get('http://jira.it2g.ru/issues/?jql=')
     # кликнуть на фильтр 
     for t in range(len(filters_npa[0])):
         generate_report(driver, t)
     
     for z in range(len(filters_npa[1])):
-        pyxl(filters_npa[1][z], filters_npa[2][z])
+        if filters_npa[2][z] == 'В тестировании':
+            tsk_list, iss = [],[]
+            counter = 0
+            fn = 'data\\10_05_18 Предварительный отчет по задачам релиза 2 Sprint 1.xlsx'
+            tsk_list = gtb.get_tasks_in_test(driver)
+            for u in range(len(tsk_list)):
+                try:
+                    bgs = gtb.search_data(driver, tsk_list[u])
+                except:
+                    print('Связанных багов нет.')
+                    bgs = []
+                iss = gtb.tsk_data(driver, tsk_list[u])
+            counter = gtb.write_to_xls(iss, bgs, fn, counter)
+        else:
+            pyxl(filters_npa[1][z], filters_npa[2][z])
 
 
 def generate_report(driver, t):
