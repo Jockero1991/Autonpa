@@ -1,12 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.action_chains import ActionChains as ac
-from selenium.webdriver.common.keys import Keys as ks
-from datetime import datetime as dt
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
 from time import sleep
 import pytest
 from openpyxl import load_workbook as lw
@@ -137,10 +130,9 @@ def write_to_xls(task, bugs, df, lr=0):
 
     # Запишем заголовки в файл
     wb = lw(df)
-    ws1 = wb["TEST"]
+    ws1 = wb["В тестировании"]
     
     quan_h = ['Кол-во багов: ', str(len(bugs))]
-    #print(len(task))
     #Есть задача, баги, файл назначения и номер строки (который передаем)
 
     for row in range(lr+1, lr+2):

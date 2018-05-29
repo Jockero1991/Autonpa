@@ -154,7 +154,7 @@ def get_data(driver):
     except:
         print('Задач нет')
         return ''
-
+# Переписать функцию, чтобы писала сразу в excel для каждой вкладки свои данные
 def write_data(data, path, trigger='headers', end = False):
     # в случае trigger = 'headers' в файл записывается строчка с заголовками столбцов
     # в случае trigger = 'data' в файл записываются данные с задачами
