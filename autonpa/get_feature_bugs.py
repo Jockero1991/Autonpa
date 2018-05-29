@@ -69,7 +69,6 @@ def test_main(driver):
             bgs = []
         iss = tsk_data(driver, tsk_list[u])
         counter = write_to_xls(iss, bgs, fn, counter)
-        print(counter)
 
 
 def search_data(driver, tasknum):
@@ -77,7 +76,6 @@ def search_data(driver, tasknum):
     # Открываем фильтр по багам связанным с задачей.
     driver.get('http://jira.it2g.ru/issues/?filter=10480')
     sleep(2)
-    # test = driver.find_element_by_id('advanced-search').get_attribute('value')
     driver.find_element_by_id('advanced-search').clear()
     new_val=f'project = NPA AND issuetype = Bug AND issue in linkedIssues({str(tasknum)}) AND status != Закрыт'
     driver.find_element_by_id('advanced-search').send_keys(new_val)
@@ -117,10 +115,7 @@ def get_bugs_data(driver):
         result[y].append(summ[y])
         result[y].append(stat[y])
         result[y].append(pr[y])
-        result[y].append(assign[y])         
-
-    #Результаты в консоли
-    #print(result)
+        result[y].append(assign[y])
 
     return result
 
@@ -146,44 +141,27 @@ def write_to_xls(task, bugs, df, lr=0):
     
     quan_h = ['Кол-во багов: ', str(len(bugs))]
     #print(len(task))
-    for i in range(lr, 3*len(task)+len(bugs)):
+    #Есть задача, баги, файл назначения и номер строки (который передаем)
 
-        for row in range(i+1, len(task)+1):
-            for col in range(0, len(headers)):
-                _ = ws1.cell(column=col+1, row=row, value=headers[col])
-                # Записываем данные по задаче       
-                _ = ws1.cell(column=col+1, row=row+1, value = task[col])
-                for col in range(0, len(quan_h)):
-                    # Кол-во багов под данныами по задаче      
-                    _ = ws1.cell(column=col+1, row=row+2, value = quan_h[col])
-                if(col != len(headers)-7):
-                    if bugs == []:
-                        lr = row+2
-                    else:
-                        # Записываем данные по багам
-                        for b in range(len(bugs)):
-                            _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
-            lr = row+len(bugs)
-            
+    for row in range(lr+1, lr+2):
+        for col in range(0, len(headers)):
+            _ = ws1.cell(column=col+1, row=row, value=headers[col])
+        for col in range(0, len(headers)-7):
+            # Записываем данные по задаче
+            _ = ws1.cell(column=col+1, row=row+1, value = task[col])
+            if(col != len(headers)-7):
+                if bugs == []:
+                    lr = row+2
+                else:
+                   # Записываем данные по багам
+                   for b in range(1, len(bugs)+1):
+                       _ = ws1.cell(column=col+7, row=row+b, value = bugs[b-1][col])
+        lr = row+len(bugs)
+        for col in range(0, len(quan_h)):
+            # Кол-во багов под данныами по задаче
+            _ = ws1.cell(column=col+1, row=row+2, value = quan_h[col])
 
-        # for row in range(i+2, len(task)+2):
-        #     for col in range(0, len(headers)-7):
-        #         # Записываем данные по задаче       
-        #         _ = ws1.cell(column=col+1, row=row, value = task[col])
-                 
-        #         if bugs == []:
-        #             lr = row+2
-        #         else:
-        #             # Записываем данные по багам
-        #             for b in range(len(bugs)):
-        #                 _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
-        #             lr = row+len(bugs)
-        # for row in range(i+3, 5):
-        #     for col in range(0, 2):
-        #         # Кол-во багов под данныами по задаче      
-        #         _ = ws1.cell(column=col+1, row=row, value = quan_h[col])
     wb.save(filename = df)
-    
     return lr
 
 
