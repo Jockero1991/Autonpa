@@ -146,27 +146,42 @@ def write_to_xls(task, bugs, df, lr=0):
     
     quan_h = ['Кол-во багов: ', str(len(bugs))]
     #print(len(task))
-    for i in range(lr, 2*len(task)+len(bugs)):
+    for i in range(lr, 3*len(task)+len(bugs)):
 
-        for row in range(i, 3):
+        for row in range(i+1, 3*len(task)+1):
             for col in range(0, len(headers)):
                 _ = ws1.cell(column=col+1, row=row, value=headers[col])
-        for row in range(i+1, 4):
-            for col in range(0, len(headers)-7):
                 # Записываем данные по задаче       
-                _ = ws1.cell(column=col+1, row=row, value = task[col])
+                _ = ws1.cell(column=col+1, row=row+1, value = task[col])
+                for col in range(0, len(quan_h)):
+                    # Кол-во багов под данныами по задаче      
+                    _ = ws1.cell(column=col+1, row=row+2, value = quan_h[col])
+                if(col != len(headers)-7):
+                    if bugs == []:
+                        lr = row+2
+                    else:
+                        # Записываем данные по багам
+                        for b in range(len(bugs)):
+                            _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
+                        lr = row+len(bugs)
+            
+
+        # for row in range(i+2, len(task)+2):
+        #     for col in range(0, len(headers)-7):
+        #         # Записываем данные по задаче       
+        #         _ = ws1.cell(column=col+1, row=row, value = task[col])
                  
-                if bugs == []:
-                    lr = row+2
-                else:
-                    # Записываем данные по багам
-                    for b in range(len(bugs)):
-                        _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
-                    lr = row+len(bugs)
-        for row in range(i+2, 5):
-            for col in range(0, 2):
-                # Кол-во багов под данныами по задаче      
-                _ = ws1.cell(column=col+1, row=row, value = quan_h[col])
+        #         if bugs == []:
+        #             lr = row+2
+        #         else:
+        #             # Записываем данные по багам
+        #             for b in range(len(bugs)):
+        #                 _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
+        #             lr = row+len(bugs)
+        # for row in range(i+3, 5):
+        #     for col in range(0, 2):
+        #         # Кол-во багов под данныами по задаче      
+        #         _ = ws1.cell(column=col+1, row=row, value = quan_h[col])
     wb.save(filename = df)
     
     return lr
