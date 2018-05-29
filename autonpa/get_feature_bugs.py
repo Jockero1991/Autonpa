@@ -148,7 +148,7 @@ def write_to_xls(task, bugs, df, lr=0):
     #print(len(task))
     for i in range(lr, 3*len(task)+len(bugs)):
 
-        for row in range(i+1, 3*len(task)+1):
+        for row in range(i+1, len(task)+1):
             for col in range(0, len(headers)):
                 _ = ws1.cell(column=col+1, row=row, value=headers[col])
                 # Записываем данные по задаче       
@@ -163,7 +163,7 @@ def write_to_xls(task, bugs, df, lr=0):
                         # Записываем данные по багам
                         for b in range(len(bugs)):
                             _ = ws1.cell(column=col+7, row=row+b, value = bugs[b][col])
-                        lr = row+len(bugs)
+            lr = row+len(bugs)
             
 
         # for row in range(i+2, len(task)+2):
