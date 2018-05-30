@@ -32,48 +32,40 @@ def driver(request):
 # - Кастомизировать выгрузку под каждую вкладку отчета.
 
 filters_npa = [
-["10765",  # задачи в разработке
-"10766", # задачи в аналитике
+[#"10765",  # задачи в разработке
+#"10766", # задачи в аналитике
 #"10769", # задачи в тестировании
-"10767", # закрытые задачи
-"10770", # Открытые баги
-"10772", # Закрытые баги
-"10773"  # Отложенные задачи
+#"10767", # закрытые задачи
+#"10770", # Открытые баги
+#"10772", # Закрытые баги
+#"10773"  # Отложенные задачи
 ],
- ['data\в_разработке.csv', 'data\в_аналитике.csv',
+ [#'data\в_разработке.csv', 'data\в_аналитике.csv',
  #'data\в_тестировании.csv',
- 'data\закрытые_задачи.csv',
- 'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
+ #'data\закрытые_задачи.csv',
+ #'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
   ],
-  ['В разработке', 'В аналитике',
-  'В тестировании',
-  'Готовые задачи',
-  'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
+  [#'В разработке', 'В аналитике',
+  'В тестировании'#,
+  #'Готовые задачи',
+  #'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
   ]
  ]
 
 def test_main(driver):
-    # #login_data=[]
-    # with open('login_data.txt', 'r') as ld:
-    #     login_data = ld.readline().split(',')
-    #     print(login_data)
-    # #login
-    # driver.get('http://jira.it2g.ru/login.jsp')
-    # driver.find_element_by_id('login-form-username').send_keys(login_data[0])
-    # driver.find_element_by_id('login-form-password').send_keys(login_data[1])
-    # driver.find_element_by_id('login-form-submit').click()
     gtb.login(driver)
-    driver.get('http://jira.it2g.ru/issues/?jql=')
+    #driver.get('http://jira.it2g.ru/issues/?jql=')
     # кликнуть на фильтр 
-    for t in range(len(filters_npa[0])):
-        generate_report(driver, t)
-    
-    for z in range(len(filters_npa[1])):
+    # for t in range(len(filters_npa[0])):
+    #     generate_report(driver, t)
+    sleep(2)
+    for z in range(len(filters_npa[2])):
         if filters_npa[2][z] == 'В тестировании':
             tsk_list, iss = [],[]
             counter = 0
             fn = 'data\\10_05_18 Предварительный отчет по задачам релиза 2 Sprint 1.xlsx'
             tsk_list = gtb.get_tasks_in_test(driver)
+            #print(tsk_list)
             for u in range(len(tsk_list)):
                 try:
                     bgs = gtb.search_data(driver, tsk_list[u])
@@ -81,7 +73,7 @@ def test_main(driver):
                     print('Связанных багов нет.')
                     bgs = []
                 iss = gtb.tsk_data(driver, tsk_list[u])
-            counter = gtb.write_to_xls(iss, bgs, fn, counter)
+                counter = gtb.write_to_xls(iss, bgs, fn, counter)
         else:
             pyxl(filters_npa[1][z], filters_npa[2][z])
 

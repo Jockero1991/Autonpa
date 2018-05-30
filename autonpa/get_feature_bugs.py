@@ -42,7 +42,7 @@ def get_tasks_in_test(driver):
     issues = [x.text for x in issues]
     issues = list(filter(lambda x: x!='', issues))
     issues = [issues[x] for x in range(0, len(issues), 2)]
-    print(issues)
+    #print(issues)
     return issues
 
 test_arr = ['NPA-1219', 'NPA-1429']
@@ -117,8 +117,8 @@ def write_to_xls(task, bugs, df, lr=0):
     headers = [
         '№ задачи Jira', 
         'Приоритет',
-        'Тема:', 
-        'Статус', 
+        'Статус',
+        'Тема:',
         'Тестировщик', 
         'Комментарий', 
         '№ бага', 
@@ -128,30 +128,31 @@ def write_to_xls(task, bugs, df, lr=0):
         'Исполнитель', 
         'Можно перенести']
 
-    # Запишем заголовки в файл
+
     wb = lw(df)
     ws1 = wb["В тестировании"]
     
     quan_h = ['Кол-во багов: ', str(len(bugs))]
     #Есть задача, баги, файл назначения и номер строки (который передаем)
-
     for row in range(lr+1, lr+2):
+        # Запишем заголовки в файл
         for col in range(0, len(headers)):
-            _ = ws1.cell(column=col+1, row=row, value=headers[col])
+            _ = ws1.cell(column=col+2, row=row, value=headers[col])
+        # Записываем данные по задаче
         for col in range(0, len(headers)-7):
-            # Записываем данные по задаче
-            _ = ws1.cell(column=col+1, row=row+1, value = task[col])
+            _ = ws1.cell(column=col+2, row=row+1, value = task[col])
             if(col != len(headers)-7):
                 if bugs == []:
-                    lr = row+2
+                    lr = row+4
                 else:
                    # Записываем данные по багам
                    for b in range(1, len(bugs)+1):
-                       _ = ws1.cell(column=col+7, row=row+b, value = bugs[b-1][col])
-        lr = row+len(bugs)
+                       _ = ws1.cell(column=col+8, row=row+b, value = bugs[b-1][col])
+        lr = row+len(bugs)+2
         for col in range(0, len(quan_h)):
-            # Кол-во багов под данныами по задаче
-            _ = ws1.cell(column=col+1, row=row+2, value = quan_h[col])
+            # Кол-во багов под данными по задаче
+            _ = ws1.cell(column=col+2, row=row+2, value = quan_h[col])
+        print(task[0], quan_h)
 
     wb.save(filename = df)
     return lr
@@ -160,7 +161,7 @@ def write_to_xls(task, bugs, df, lr=0):
 # Собираем данные о задаче возвращаем №, приоритет, статус, тему, QA
 def tsk_data(driver, issue):
     task_res = []
-    print(issue)
+    #print(issue)
     sleep(3)
     driver.get(f'http://jira.it2g.ru/browse/{str(issue)}')
 
@@ -169,6 +170,6 @@ def tsk_data(driver, issue):
     task_res.append(str(driver.find_element_by_id('status-val').text))
     task_res.append(str(driver.find_element_by_id('summary-val').text))
     task_res.append(str(driver.find_element_by_xpath('//*[@id="customfield_10201-val"]/span').text))
-    print(task_res)
+    #print(task_res)
     return task_res
 
