@@ -119,7 +119,8 @@ def write_to_xls(task, bugs, df, lr=0):
         'Приоритет',
         'Статус',
         'Тема:',
-        'Тестировщик', 
+        'Тестировщик',
+        'Версия',
         'Комментарий', 
         '№ бага', 
         'Тема',  
@@ -139,15 +140,19 @@ def write_to_xls(task, bugs, df, lr=0):
         for col in range(0, len(headers)):
             _ = ws1.cell(column=col+2, row=row, value=headers[col])
         # Записываем данные по задаче
-        for col in range(0, len(headers)-7):
+        for col in range(0, len(headers)-6):
             _ = ws1.cell(column=col+2, row=row+1, value = task[col])
+
+        for col in range(0, len(headers)-7):
             if(col != len(headers)-7):
                 if bugs == []:
                     lr = row+4
                 else:
                    # Записываем данные по багам
+                   #print(len(bugs[1]))
                    for b in range(1, len(bugs)+1):
-                       _ = ws1.cell(column=col+8, row=row+b, value = bugs[b-1][col])
+                        print(col+8)
+                        _ = ws1.cell(column=col+8, row=row+b, value = bugs[b-1][col])
         lr = row+len(bugs)+2
         for col in range(0, len(quan_h)):
             # Кол-во багов под данными по задаче
@@ -157,6 +162,14 @@ def write_to_xls(task, bugs, df, lr=0):
     wb.save(filename = df)
     return lr
 
+def write_quantity_of_task(df, cntr):
+    wb = lw(df)
+    ws1 = wb["В тестировании"]
+    quantity = ['Кол-во задач: ', '=СЧЁТЗ(E1:E48)/2']
+    for col in range(0, len(quantity)):
+        # Кол-во багов под данными по задаче
+        _ = ws1.cell(column=col+2, row=cntr+1, value = quantity[col])
+    wb.save(filename = df)
 
 # Собираем данные о задаче возвращаем №, приоритет, статус, тему, QA
 def tsk_data(driver, issue):
@@ -170,6 +183,7 @@ def tsk_data(driver, issue):
     task_res.append(str(driver.find_element_by_id('status-val').text))
     task_res.append(str(driver.find_element_by_id('summary-val').text))
     task_res.append(str(driver.find_element_by_xpath('//*[@id="customfield_10201-val"]/span').text))
+    task_res.append(str(driver.find_element_by_id('fixfor-val').text))
     #print(task_res)
     return task_res
 

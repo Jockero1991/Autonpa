@@ -74,6 +74,7 @@ def test_main(driver):
                     bgs = []
                 iss = gtb.tsk_data(driver, tsk_list[u])
                 counter = gtb.write_to_xls(iss, bgs, fn, counter)
+            gtb.write_quantity_of_task(fn, counter)
         else:
             pyxl(filters_npa[1][z], filters_npa[2][z])
 
