@@ -153,7 +153,7 @@ def write_to_xls(task, bugs, df, lr=0):
                    #print(len(headers), len(bugs[1]))
                    for b in range(1, len(bugs)+1):
                         #print(col+8)
-                        _ = ws1.cell(column=col+8, row=row+b, value = bugs[b-1][col])
+                        _ = ws1.cell(column=col+9, row=row+b, value = bugs[b-1][col])
         lr = row+len(bugs)+2
         for col in range(0, len(quan_h)):
             # Кол-во багов под данными по задаче

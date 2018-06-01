@@ -54,13 +54,13 @@ filters_npa = [
 
 def test_main(driver):
     gtb.login(driver)
-    driver.get('http://jira.it2g.ru/issues/?jql=')
-    #кликнуть на фильтр 
-    for t in range(len(filters_npa[0])):
-        generate_report(driver, t)
-        #sleep(0.5)
-    for z in range(len(filters_npa[2])):
-        pyxl(filters_npa[1][z], filters_npa[2][z])
+    # driver.get('http://jira.it2g.ru/issues/?jql=')
+    # #кликнуть на фильтр
+    # for t in range(len(filters_npa[0])):
+    #     generate_report(driver, t)
+    #     #sleep(0.5)
+    # for z in range(len(filters_npa[2])):
+    #     pyxl(filters_npa[1][z], filters_npa[2][z])
     tsk_list, iss = [],[]
     counter = 0
     fn = 'data\\17_05_18 Предварительный отчет по задачам релиза 2 Sprint 1-2.xlsx'
