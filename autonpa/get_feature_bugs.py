@@ -42,7 +42,7 @@ def get_tasks_in_test(driver):
     issues = [x.text for x in issues]
     issues = list(filter(lambda x: x!='', issues))
     issues = [issues[x] for x in range(0, len(issues), 2)]
-    #print(issues)
+    print(issues)
     return issues
 
 test_arr = ['NPA-1219', 'NPA-1429']
@@ -175,7 +175,7 @@ def write_quantity_of_task(df, cntr):
 # Собираем данные о задаче возвращаем №, приоритет, статус, тему, QA
 def tsk_data(driver, issue):
     task_res = []
-    #print(issue)
+    print(issue)
     sleep(3)
     driver.get(f'http://jira.it2g.ru/browse/{str(issue)}')
 
@@ -185,6 +185,6 @@ def tsk_data(driver, issue):
     task_res.append(str(driver.find_element_by_id('summary-val').text))
     task_res.append(str(driver.find_element_by_xpath('//*[@id="customfield_10201-val"]/span').text))
     task_res.append(str(driver.find_element_by_id('fixfor-val').text))
-    #print(task_res)
+    print(task_res)
     return task_res
 

@@ -58,12 +58,12 @@ def test_main(driver):
     #кликнуть на фильтр 
     for t in range(len(filters_npa[0])):
         generate_report(driver, t)
-    sleep(2)
+        #sleep(0.5)
     for z in range(len(filters_npa[2])):
         pyxl(filters_npa[1][z], filters_npa[2][z])
     tsk_list, iss = [],[]
     counter = 0
-    fn = 'data\\26_04_18 Предварительный отчет по задачам релиза 2 Sprint 1.xlsx'
+    fn = 'data\\17_05_18 Предварительный отчет по задачам релиза 2 Sprint 1-2.xlsx'
     tsk_list = gtb.get_tasks_in_test(driver)
     #print(tsk_list)
     for u in range(len(tsk_list)):
@@ -140,7 +140,7 @@ def get_data(driver):
         sprint = driver.find_elements_by_class_name('fixVersions')
         sprint = [x.text for x in sprint]
         #sprint = [str(x[0]) for x in sprint]
-        len(sprint)
+        print(len(sprint))
     
         for u in range(len(assignee)):
             try:
