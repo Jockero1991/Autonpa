@@ -32,51 +32,49 @@ def driver(request):
 # - Кастомизировать выгрузку под каждую вкладку отчета.
 
 filters_npa = [
-[#"10765",  # задачи в разработке
-#"10766", # задачи в аналитике
+["10765",  # задачи в разработке
+"10766", # задачи в аналитике
 #"10769", # задачи в тестировании
-#"10767", # закрытые задачи
-#"10770", # Открытые баги
-#"10772", # Закрытые баги
-#"10773"  # Отложенные задачи
+"10767", # закрытые задачи
+"10770", # Открытые баги
+"10772", # Закрытые баги
+"10773"  # Отложенные задачи
 ],
- [#'data\в_разработке.csv', 'data\в_аналитике.csv',
+ ['data\в_разработке.csv', 'data\в_аналитике.csv',
  #'data\в_тестировании.csv',
- #'data\закрытые_задачи.csv',
- #'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
+ 'data\закрытые_задачи.csv',
+ 'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
   ],
-  [#'В разработке', 'В аналитике',
-  'В тестировании'#,
-  #'Готовые задачи',
-  #'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
+  ['В разработке', 'В аналитике',
+  #'В тестировании',
+  'Готовые задачи',
+  'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
   ]
  ]
 
 def test_main(driver):
     gtb.login(driver)
-    #driver.get('http://jira.it2g.ru/issues/?jql=')
-    # кликнуть на фильтр 
-    # for t in range(len(filters_npa[0])):
-    #     generate_report(driver, t)
+    driver.get('http://jira.it2g.ru/issues/?jql=')
+    #кликнуть на фильтр 
+    for t in range(len(filters_npa[0])):
+        generate_report(driver, t)
     sleep(2)
     for z in range(len(filters_npa[2])):
-        if filters_npa[2][z] == 'В тестировании':
-            tsk_list, iss = [],[]
-            counter = 0
-            fn = 'data\\10_05_18 Предварительный отчет по задачам релиза 2 Sprint 1.xlsx'
-            tsk_list = gtb.get_tasks_in_test(driver)
-            #print(tsk_list)
-            for u in range(len(tsk_list)):
-                try:
-                    bgs = gtb.search_data(driver, tsk_list[u])
-                except:
-                    print('Связанных багов нет.')
-                    bgs = []
-                iss = gtb.tsk_data(driver, tsk_list[u])
-                counter = gtb.write_to_xls(iss, bgs, fn, counter)
-            gtb.write_quantity_of_task(fn, counter)
-        else:
-            pyxl(filters_npa[1][z], filters_npa[2][z])
+        pyxl(filters_npa[1][z], filters_npa[2][z])
+    tsk_list, iss = [],[]
+    counter = 0
+    fn = 'data\\26_04_18 Предварительный отчет по задачам релиза 2 Sprint 1.xlsx'
+    tsk_list = gtb.get_tasks_in_test(driver)
+    #print(tsk_list)
+    for u in range(len(tsk_list)):
+        try:
+            bgs = gtb.search_data(driver, tsk_list[u])
+        except:
+            print('Связанных багов нет.')
+            bgs = []
+        iss = gtb.tsk_data(driver, tsk_list[u])
+        counter = gtb.write_to_xls(iss, bgs, fn, counter)
+    gtb.write_quantity_of_task(fn, counter)
 
 
 def generate_report(driver, t):
@@ -139,6 +137,10 @@ def get_data(driver):
     
         assignee = driver.find_elements_by_class_name('assignee')
         qa_assigned = driver.find_elements_by_css_selector('.customfield_10201')
+        sprint = driver.find_elements_by_class_name('fixVersions')
+        sprint = [x.text for x in sprint]
+        #sprint = [str(x[0]) for x in sprint]
+        len(sprint)
     
         for u in range(len(assignee)):
             try:
@@ -155,7 +157,7 @@ def get_data(driver):
         temp_str = '' 
 
         for r in range(len(types_of_tasks)):
-            temp_str = f'{task_id[r]}|{types_of_tasks[r]}|{statuses[r]}|{priority[r]}|{summary[r]}|{assignee[r]}|{qa_assigned[r]}'.split(',')
+            temp_str = f'{task_id[r]}|{types_of_tasks[r]}|{statuses[r]}|{priority[r]}|{summary[r]}|{assignee[r]}|{qa_assigned[r]}|{sprint[r]}'.split(';')
             result.append(temp_str)
         print(result[0])
         return result
@@ -167,24 +169,13 @@ def write_data(data, path, trigger='headers', end = False):
     # в случае trigger = 'headers' в файл записывается строчка с заголовками столбцов
     # в случае trigger = 'data' в файл записываются данные с задачами
     with open(path, "a", newline='') as csv_file:
-        writer = csv.writer(csv_file, delimiter=',')
+        writer = csv.writer(csv_file, delimiter=';')
 
         if trigger=='headers':
-            writer.writerow('№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик'.split(','))
+            writer.writerow('№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик|Sprint'.split(';'))
 
         if trigger == 'data':
             for line in data:
                 writer.writerow(line)
         if end:
             csv_file.close()
-
-def read_data(path, assert_data):
-    reading_txt=[]
-    with open(path, "r") as csv_file:
-        reader = csv.DictReader(csv_file, delimiter=',')
-        #print(reader[0])
-        for line in reader:
-            reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик"])
-    
-    for x in range(len(reading_txt)):
-        assert reading_txt[x] == assert_data[x][0]

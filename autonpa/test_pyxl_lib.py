@@ -5,16 +5,16 @@ from openpyxl.utils import get_column_letter
 import csv
 
 def pyxl(p, sh):
-    d_file = 'data\\10_05_18 Предварительный отчет по задачам релиза 2 Sprint 1.xlsx'
+    d_file = 'data\\26_04_18 Предварительный отчет по задачам релиза 2 Sprint 1.xlsx'
     report_book = lw(d_file)
     current_sheet = report_book[sh]
     
     reading_txt=[]
     with open(p, "r") as csv_file:
         reader = csv.DictReader(csv_file, delimiter=';')
-        #print(reader[0])
+        print(reader[2])
         for line in reader:
-            reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик"])
+            reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик|Sprint"])
     #print(len(reading_txt))
     for row in range(3, (len(reading_txt)+3)):
         _ = current_sheet.cell(column = 2, row=row, value="{0}".format(reading_txt[row-3]))

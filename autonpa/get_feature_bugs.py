@@ -140,18 +140,19 @@ def write_to_xls(task, bugs, df, lr=0):
         for col in range(0, len(headers)):
             _ = ws1.cell(column=col+2, row=row, value=headers[col])
         # Записываем данные по задаче
-        for col in range(0, len(headers)-6):
+        #print(len(headers), len(task))
+        for col in range(0, len(headers)-7):
             _ = ws1.cell(column=col+2, row=row+1, value = task[col])
 
-        for col in range(0, len(headers)-7):
-            if(col != len(headers)-7):
+        for col in range(0, len(headers)-8):
+            if(col != len(headers)-8):
                 if bugs == []:
                     lr = row+4
                 else:
                    # Записываем данные по багам
-                   #print(len(bugs[1]))
+                   #print(len(headers), len(bugs[1]))
                    for b in range(1, len(bugs)+1):
-                        print(col+8)
+                        #print(col+8)
                         _ = ws1.cell(column=col+8, row=row+b, value = bugs[b-1][col])
         lr = row+len(bugs)+2
         for col in range(0, len(quan_h)):
@@ -165,7 +166,7 @@ def write_to_xls(task, bugs, df, lr=0):
 def write_quantity_of_task(df, cntr):
     wb = lw(df)
     ws1 = wb["В тестировании"]
-    quantity = ['Кол-во задач: ', '=СЧЁТЗ(E1:E48)/2']
+    quantity = ['Кол-во задач: ', '=СЧЁТЗ(E1:E99)/2']
     for col in range(0, len(quantity)):
         # Кол-во багов под данными по задаче
         _ = ws1.cell(column=col+2, row=cntr+1, value = quantity[col])
