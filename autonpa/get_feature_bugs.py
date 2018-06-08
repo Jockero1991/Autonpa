@@ -5,6 +5,12 @@ import pytest
 from openpyxl import load_workbook as lw
 from openpyxl import Workbook
 from openpyxl.compat import range
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import Font, PatternFill, Border, Side
+#from openpyxl.formatting.rule import IconSet, FormatObject
+from openpyxl.styles.differential import DifferentialStyle
+from openpyxl.formatting.rule import Rule
+from test_pyxl_lib import style_range
 
 
 @pytest.fixture
@@ -53,7 +59,7 @@ def test_main(driver):
     login(driver)
     tsk_list = []
     counter = 0
-    tsk_list = test_arr #get_tasks_in_test(driver)
+    tsk_list = get_tasks_in_test(driver)
     for u in range(len(tsk_list)):
         try:
             bgs = search_data(driver, tsk_list[u])
@@ -130,19 +136,28 @@ def write_to_xls(task, bugs, df, lr=0):
         'Можно перенести']
 
 
+    # assign the icon set to a rule
+    border = Border(left = Side(border_style = 'double', color = 'FF000000'),
+                                          right = Side(border_style = 'double', color = 'FF000000'),
+                                          top = Side(border_style = 'double', color = 'FF000000'),
+                                          bottom = Side(border_style = 'double', color = 'FF000000'))
+
     wb = lw(df)
     ws1 = wb["В тестировании"]
     
     quan_h = ['Кол-во багов: ', str(len(bugs))]
     #Есть задача, баги, файл назначения и номер строки (который передаем)
+    starts, ends = '', ''
     for row in range(lr+1, lr+2):
         # Запишем заголовки в файл
+        starts = f'{get_column_letter(2)}{lr+1}'
         for col in range(0, len(headers)):
             _ = ws1.cell(column=col+2, row=row, value=headers[col])
+
         # Записываем данные по задаче
-        #print(len(headers), len(task))
+        print(len(headers), len(task))
         for col in range(0, len(headers)-7):
-            _ = ws1.cell(column=col+2, row=row+1, value = task[col])
+            _ = ws1.cell(column=col+2, row=row+1, value=task[col])
 
         for col in range(0, len(headers)-8):
             if(col != len(headers)-8):
@@ -154,12 +169,17 @@ def write_to_xls(task, bugs, df, lr=0):
                    for b in range(1, len(bugs)+1):
                         #print(col+8)
                         _ = ws1.cell(column=col+9, row=row+b, value = bugs[b-1][col])
+        ends = f'{get_column_letter(len(headers)+1)}{row+(len(bugs)+1)}'
+        #print(f'Финальная ячейка: {ends}')
         lr = row+len(bugs)+2
         for col in range(0, len(quan_h)):
             # Кол-во багов под данными по задаче
             _ = ws1.cell(column=col+2, row=row+2, value = quan_h[col])
         print(task[0], quan_h)
-
+    rang = f'{starts}:{ends}'
+    print(rang)
+    style_range(ws1, rang, border=border)
+    #ws1.conditional_formatting.add(rang, border = dxf)
     wb.save(filename = df)
     return lr
 

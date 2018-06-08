@@ -52,13 +52,16 @@ filters_npa = [
   ]
  ]
 
+test_arr = ['NPA-1219', 'NPA-1429']
+
 def test_main(driver):
     gtb.login(driver)
     # driver.get('http://jira.it2g.ru/issues/?jql=')
+    # sleep(0.5)
     # #кликнуть на фильтр
     # for t in range(len(filters_npa[0])):
     #     generate_report(driver, t)
-    #     #sleep(0.5)
+    #
     # for z in range(len(filters_npa[2])):
     #     pyxl(filters_npa[1][z], filters_npa[2][z])
     tsk_list, iss = [],[]
