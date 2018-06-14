@@ -34,23 +34,23 @@ def driver(request):
 # - На очереди вкладка В разработке.
 
 filters_npa = [
-[#"10765",  # задачи в разработке
-#"10766", # задачи в аналитике
+["10765",  # задачи в разработке
+"10766", # задачи в аналитике
 "10769", # задачи в тестировании
-#"10767", # закрытые задачи
-#"10770", # Открытые баги
-#"10772", # Закрытые баги
-#"10773"  # Отложенные задачи
+"10767", # закрытые задачи
+"10770", # Открытые баги
+"10772", # Закрытые баги
+"10773"  # Отложенные задачи
 ],
- [#'data\в_разработке.csv', 'data\в_аналитике.csv',
+ ['data\в_разработке.csv', #'data\в_аналитике.csv',
  #'data\в_тестировании.csv',
  'data\закрытые_задачи.csv',
  'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
   ],
-  [#'В разработке', #'В аналитике',
-  'В тестировании'#,
-  #'Готовые задачи',
-  #'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
+  ['В разработке', #'В аналитике',
+  'В тестировании',
+  'Готовые задачи',
+  'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
   ]
  ]
 
@@ -90,26 +90,14 @@ def test_main(driver):
                 iss = gtb.tsk_data(driver, tsk_list[u])
                 counter = gtb.write_to_xls(iss, bgs, fn, counter)
             gtb.write_quantity_of_task(fn, counter)
-    #     else:
-    #         generate_report(driver, t)
-    #
-    # for z in range(len(filters_npa[2])):
-    #     if filters_npa[0][z] == '10765':
-    #         pass
-    #     else:
-    #         pyxl(filters_npa[1][z], filters_npa[2][z])
+        else:
+            generate_report(driver, t)
 
-    # tsk_list = gtb.get_tasks_list(driver, '10769')
-    # #print(tsk_list)
-    # for u in range(len(tsk_list)):
-    #     try:
-    #         bgs = gtb.search_data(driver, tsk_list[u])
-    #     except:
-    #         print('Связанных багов нет.')
-    #         bgs = []
-    #     iss = gtb.tsk_data(driver, tsk_list[u])
-    #     counter = gtb.write_to_xls(iss, bgs, fn, counter)
-    # gtb.write_quantity_of_task(fn, counter)
+    for z in range(len(filters_npa[2])):
+        if filters_npa[0][z] == '10765':
+            pass
+        else:
+            pyxl(filters_npa[1][z], filters_npa[2][z])
 
 
 def generate_report(driver, t):
