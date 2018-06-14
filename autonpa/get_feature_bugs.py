@@ -41,17 +41,17 @@ def login(driver):
     driver.find_element_by_id('login-form-submit').click()
 
 # Функция возвращает массив задач по фильтру Готово к тестированию
-def get_tasks_in_test(driver):
+def get_tasks_list(driver, filter_id):
     # Открываем фильтр Готово к тестированию
-    driver.get('http://jira.it2g.ru/issues/?filter=10472')
+    driver.get(f'http://jira.it2g.ru/issues/?filter={filter_id}')
     issues = driver.find_elements_by_class_name('issue-link')
     issues = [x.text for x in issues]
     issues = list(filter(lambda x: x!='', issues))
     issues = [issues[x] for x in range(0, len(issues), 2)]
     print(issues)
     return issues
-
-test_arr = ['NPA-1219', 'NPA-1429']
+# Масссив для быстрой отладки скрипта для вкладки тестирование
+# test_arr = ['NPA-1219', 'NPA-1429']
 
 # Отсюда вызываем все функции этого модуля
 def test_main(driver):
@@ -59,7 +59,7 @@ def test_main(driver):
     login(driver)
     tsk_list = []
     counter = 0
-    tsk_list = get_tasks_in_test(driver)
+    tsk_list = get_tasks_list(driver, '10472')
     for u in range(len(tsk_list)):
         try:
             bgs = search_data(driver, tsk_list[u])

@@ -16,6 +16,7 @@ from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
 from test_pyxl_lib import pyxl
 import get_feature_bugs as gtb
+import get_task_in_dev as gtid
 
 @pytest.fixture
 def driver(request):
@@ -30,25 +31,26 @@ def driver(request):
 # Фича-лист
 # - добавить поле исправлено в версии (добавил)
 # - Кастомизировать выгрузку под каждую вкладку отчета(кастомизировал только для вкладки в тестировании).
+# - На очереди вкладка В разработке.
 
 filters_npa = [
-["10765",  # задачи в разработке
-"10766", # задачи в аналитике
-#"10769", # задачи в тестировании
-"10767", # закрытые задачи
-"10770", # Открытые баги
-"10772", # Закрытые баги
-"10773"  # Отложенные задачи
+[#"10765",  # задачи в разработке
+#"10766", # задачи в аналитике
+"10769", # задачи в тестировании
+#"10767", # закрытые задачи
+#"10770", # Открытые баги
+#"10772", # Закрытые баги
+#"10773"  # Отложенные задачи
 ],
- ['data\в_разработке.csv', 'data\в_аналитике.csv',
+ [#'data\в_разработке.csv', 'data\в_аналитике.csv',
  #'data\в_тестировании.csv',
  'data\закрытые_задачи.csv',
  'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
   ],
-  ['В разработке', 'В аналитике',
-  #'В тестировании',
-  'Готовые задачи',
-  'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
+  [#'В разработке', #'В аналитике',
+  'В тестировании'#,
+  #'Готовые задачи',
+  #'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
   ]
  ]
 
@@ -56,32 +58,63 @@ test_arr = ['NPA-1219', 'NPA-1429']
 
 def test_main(driver):
     gtb.login(driver)
-    # driver.get('http://jira.it2g.ru/issues/?jql=')
-    # sleep(0.5)
-    # #кликнуть на фильтр
-    # for t in range(len(filters_npa[0])):
-    #     generate_report(driver, t)
-    #
-    # for z in range(len(filters_npa[2])):
-    #     pyxl(filters_npa[1][z], filters_npa[2][z])
+    driver.get('http://jira.it2g.ru/issues/?jql=')
+    sleep(0.5)
     tsk_list, iss = [],[]
     counter = 0
     fn = 'data\\17_05_18 Предварительный отчет по задачам релиза 2 Sprint 1-2.xlsx'
-    tsk_list = gtb.get_tasks_in_test(driver)
-    #print(tsk_list)
-    for u in range(len(tsk_list)):
-        try:
-            bgs = gtb.search_data(driver, tsk_list[u])
-        except:
-            print('Связанных багов нет.')
-            bgs = []
-        iss = gtb.tsk_data(driver, tsk_list[u])
-        counter = gtb.write_to_xls(iss, bgs, fn, counter)
-    gtb.write_quantity_of_task(fn, counter)
+
+    for t in range(len(filters_npa[0])):
+        counter = 0
+        if filters_npa[2][t] == 'В разработке':
+            # Найти все задачи по фильтру В разработке.
+            iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t])
+
+            # Находим данные по каждой задаче и записываем их в итоговую таблицу
+            #count = 0
+            for x in range(len(iss_lst)):
+                iss = gtid.dev_tsk_data(driver, iss_lst[x])
+
+                # Вызываем функцию записи в файл.
+                counter = gtid.write_to_xls(iss, fn, counter)
+        print(filters_npa[2][t])
+        if filters_npa[2][t] == 'В тестировании':
+            tsk_list = gtb.get_tasks_list(driver, '10769')
+            #print(tsk_list)
+            for u in range(len(tsk_list)):
+                try:
+                    bgs = gtb.search_data(driver, tsk_list[u])
+                except:
+                    print('Связанных багов нет.')
+                    bgs = []
+                iss = gtb.tsk_data(driver, tsk_list[u])
+                counter = gtb.write_to_xls(iss, bgs, fn, counter)
+            gtb.write_quantity_of_task(fn, counter)
+    #     else:
+    #         generate_report(driver, t)
+    #
+    # for z in range(len(filters_npa[2])):
+    #     if filters_npa[0][z] == '10765':
+    #         pass
+    #     else:
+    #         pyxl(filters_npa[1][z], filters_npa[2][z])
+
+    # tsk_list = gtb.get_tasks_list(driver, '10769')
+    # #print(tsk_list)
+    # for u in range(len(tsk_list)):
+    #     try:
+    #         bgs = gtb.search_data(driver, tsk_list[u])
+    #     except:
+    #         print('Связанных багов нет.')
+    #         bgs = []
+    #     iss = gtb.tsk_data(driver, tsk_list[u])
+    #     counter = gtb.write_to_xls(iss, bgs, fn, counter)
+    # gtb.write_quantity_of_task(fn, counter)
 
 
 def generate_report(driver, t):
-    driver.find_element_by_xpath(f'//*[@class="filter-link"][@data-id="{filters_npa[0][t]}"]').click()
+    driver.get(f'http://jira.it2g.ru/issues/?filter={filters_npa[0][t]}')
+    #driver.find_element_by_xpath(f'//*[@class="filter-link"][@data-id="{filters_npa[0][t]}"]').click()
     sleep(4)
     curr_page_count, all_tasks = 0, 0
     table_data = []
