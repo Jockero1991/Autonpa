@@ -39,6 +39,7 @@ def login(driver):
     driver.find_element_by_id('login-form-username').send_keys(login_data[0])
     driver.find_element_by_id('login-form-password').send_keys(login_data[1])
     driver.find_element_by_id('login-form-submit').click()
+    return login_data[2]
 
 # Функция возвращает массив задач по фильтру Готово к тестированию
 def get_tasks_list(driver, filter_id):

@@ -9,9 +9,9 @@ from openpyxl.styles import Color, PatternFill, Font, Border
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formatting.rule import ColorScaleRule, CellIsRule, FormulaRule
 
-def pyxl(p, sh):
-    d_file = 'data\\17_05_18 Предварительный отчет по задачам релиза 2 Sprint 1-2.xlsx'
-    report_book = lw(d_file)
+def pyxl(p, sh, df):
+    d_file = 'data\\26_04_18 Предварительный отчет по задачам релиза 2 Sprint 1.xlsx'
+    report_book = lw(df)
     current_sheet = report_book[sh]
     
     reading_txt=[]

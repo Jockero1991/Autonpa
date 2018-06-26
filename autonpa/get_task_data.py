@@ -42,12 +42,12 @@ filters_npa = [
 "10772", # Закрытые баги
 "10773"  # Отложенные задачи
 ],
- ['data\в_разработке.csv', #'data\в_аналитике.csv',
+ ['data\в_разработке.csv', 'data\в_аналитике.csv',
  #'data\в_тестировании.csv',
  'data\закрытые_задачи.csv',
  'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
   ],
-  ['В разработке', #'В аналитике',
+  ['В разработке', 'В аналитике',
   'В тестировании',
   'Готовые задачи',
   'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
@@ -57,12 +57,12 @@ filters_npa = [
 test_arr = ['NPA-1219', 'NPA-1429']
 
 def test_main(driver):
-    gtb.login(driver)
+    fn = 'data\\' + gtb.login(driver)
     driver.get('http://jira.it2g.ru/issues/?jql=')
     sleep(0.5)
     tsk_list, iss = [],[]
     counter = 0
-    fn = 'data\\17_05_18 Предварительный отчет по задачам релиза 2 Sprint 1-2.xlsx'
+    #fn = 'data\\26_04_18 Предварительный отчет по задачам релиза 2 Sprint 1.xlsx'
 
     for t in range(len(filters_npa[0])):
         counter = 0
@@ -97,7 +97,7 @@ def test_main(driver):
         if filters_npa[0][z] == '10765':
             pass
         else:
-            pyxl(filters_npa[1][z], filters_npa[2][z])
+            pyxl(filters_npa[1][z], filters_npa[2][z], fn)
 
 
 def generate_report(driver, t):

@@ -2,5 +2,6 @@
   "autotests/cr_pack.py": true,
   "get_feature_bugs.py::test_main": true,
   "get_feature_bugs.py::test_search_data": true,
+  "get_task_data.py::test_main": true,
   "get_task_data.py::test_pyxl": true
 }

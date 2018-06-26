@@ -20,7 +20,7 @@ def driver(request):
     request.addfinalizer(wd.quit)
     return wd
 
-# вызов функции для отладки выгрузки модуль
+# вызов функции для отладки выгрузки задач в разработке
 def test_main(driver):
     # Создаем пустой ексель с
     df = gtb.cr_file_xls('В разработке.xlsx')
@@ -84,7 +84,7 @@ def write_to_xls(task, df, lr=0):
 
     #Есть задача, файл назначения и номер строки (который передаем)
     starts, ends = '', ''
-    for row in range(lr+1, lr+2):
+    for row in range(lr+2, lr+3):
         # Запишем заголовки в файл
         starts = f'{get_column_letter(2)}{lr+1}'
         # Вставляем формулу в столбец итого, но если все ровно по столбцам будет ложиться, то этот код не нужен.

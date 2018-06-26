@@ -18,3 +18,5 @@ autonpa/autotests/input.ini
 autonpa/autotests/logs/create.log
 *.ini
 *.log
+*.txt
+.data
