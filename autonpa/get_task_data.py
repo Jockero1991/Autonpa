@@ -42,7 +42,8 @@ filters_npa = [
 "10772", # Закрытые баги
 "10773"  # Отложенные задачи
 ],
- ['data\в_разработке.csv', 'data\в_аналитике.csv',
+ [#'data\в_разработке.csv', 
+ 'data\в_аналитике.csv',
  #'data\в_тестировании.csv',
  'data\закрытые_задачи.csv',
  'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
@@ -93,7 +94,7 @@ def test_main(driver):
         else:
             generate_report(driver, t)
 
-    for z in range(len(filters_npa[2])):
+    for z in range(len(filters_npa[1])):
         if filters_npa[0][z] == '10765':
             pass
         else:
@@ -106,7 +107,7 @@ def generate_report(driver, t):
     sleep(4)
     curr_page_count, all_tasks = 0, 0
     table_data = []
-    write_data(table_data, filters_npa[1][t], 'headers')
+    write_data(table_data, filters_npa[0][t], 'headers')
     try:
         all_tasks = driver.find_element_by_class_name('results-count-total').text
         curr_page_count = driver.find_element_by_class_name('results-count-end').text
