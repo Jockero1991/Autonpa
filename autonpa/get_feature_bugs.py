@@ -31,7 +31,7 @@ def cr_file_xls(filename):
    return filename
 
 def login(driver):
-    with open('login_data.txt', 'r') as ld:
+    with open('login_data.txt', 'r', encoding='utf-8') as ld:
         login_data = ld.readline().split(',')
         print(login_data)
     #login

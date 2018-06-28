@@ -31,25 +31,27 @@ def driver(request):
 # Фича-лист
 # - добавить поле исправлено в версии (добавил)
 # - Кастомизировать выгрузку под каждую вкладку отчета(кастомизировал только для вкладки в тестировании).
-# - На очереди вкладка В разработке.
+# - На очереди вкладка В разработке (кастомизировал).
+# - На очереди остальные вкладки
 
 filters_npa = [
 ["10765",  # задачи в разработке
+ "10769", # задачи в тестировании
 "10766", # задачи в аналитике
-"10769", # задачи в тестировании
 "10767", # закрытые задачи
 "10770", # Открытые баги
 "10772", # Закрытые баги
 "10773"  # Отложенные задачи
 ],
- [#'data\в_разработке.csv', 
- 'data\в_аналитике.csv',
+ [#'data\в_разработке.csv',
  #'data\в_тестировании.csv',
+ 'data\в_аналитике.csv',
  'data\закрытые_задачи.csv',
  'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
   ],
-  ['В разработке', 'В аналитике',
-  'В тестировании',
+  ['В разработке',
+   'В тестировании',
+   'В аналитике',
   'Готовые задачи',
   'Открытые баги', 'Исправленные баги', 'Отложеные,отклоненные'
   ]
@@ -58,7 +60,7 @@ filters_npa = [
 test_arr = ['NPA-1219', 'NPA-1429']
 
 def test_main(driver):
-    fn = 'data\\' + gtb.login(driver)
+    fn = str(gtb.login(driver))
     driver.get('http://jira.it2g.ru/issues/?jql=')
     sleep(0.5)
     tsk_list, iss = [],[]
@@ -67,6 +69,7 @@ def test_main(driver):
 
     for t in range(len(filters_npa[0])):
         counter = 0
+        dest_file = 'data\\' + fn
         if filters_npa[2][t] == 'В разработке':
             # Найти все задачи по фильтру В разработке.
             iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t])
@@ -77,7 +80,7 @@ def test_main(driver):
                 iss = gtid.dev_tsk_data(driver, iss_lst[x])
 
                 # Вызываем функцию записи в файл.
-                counter = gtid.write_to_xls(iss, fn, counter)
+                counter = gtid.write_to_xls(iss, dest_file, counter)
         print(filters_npa[2][t])
         if filters_npa[2][t] == 'В тестировании':
             tsk_list = gtb.get_tasks_list(driver, '10769')
@@ -89,13 +92,14 @@ def test_main(driver):
                     print('Связанных багов нет.')
                     bgs = []
                 iss = gtb.tsk_data(driver, tsk_list[u])
-                counter = gtb.write_to_xls(iss, bgs, fn, counter)
-            gtb.write_quantity_of_task(fn, counter)
+
+                counter = gtb.write_to_xls(iss, bgs, dest_file, counter)
+            gtb.write_quantity_of_task(dest_file, counter)
         else:
             generate_report(driver, t)
 
     for z in range(len(filters_npa[1])):
-        if filters_npa[0][z] == '10765':
+        if filters_npa[0][z] == '10765' or filters_npa[0][z] == '10769':
             pass
         else:
             pyxl(filters_npa[1][z], filters_npa[2][z], fn)
@@ -107,7 +111,7 @@ def generate_report(driver, t):
     sleep(4)
     curr_page_count, all_tasks = 0, 0
     table_data = []
-    write_data(table_data, filters_npa[0][t], 'headers')
+    write_data(table_data, filters_npa[1][t-2], 'headers')
     try:
         all_tasks = driver.find_element_by_class_name('results-count-total').text
         curr_page_count = driver.find_element_by_class_name('results-count-end').text
