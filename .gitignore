@@ -20,3 +20,5 @@ autonpa/autotests/logs/create.log
 *.log
 *.txt
 .data
+*.xml
+*.pyc
