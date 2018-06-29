@@ -65,14 +65,13 @@ def test_main(driver):
     sleep(0.5)
     tsk_list, iss = [],[]
     counter = 0
-    #fn = 'data\\26_04_18 Предварительный отчет по задачам релиза 2 Sprint 1.xlsx'
 
     for t in range(len(filters_npa[0])):
         counter = 0
         dest_file = 'data\\' + fn
         if filters_npa[2][t] == 'В разработке':
             # Найти все задачи по фильтру В разработке.
-            iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t])
+            iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t], 'Release 2, Sprint 2, Sprint 3')
 
             # Находим данные по каждой задаче и записываем их в итоговую таблицу
             #count = 0
@@ -83,7 +82,7 @@ def test_main(driver):
                 counter = gtid.write_to_xls(iss, dest_file, counter)
         print(filters_npa[2][t])
         if filters_npa[2][t] == 'В тестировании':
-            tsk_list = gtb.get_tasks_list(driver, '10769')
+            tsk_list = gtb.get_tasks_list(driver, '10769', 'Release 2, Sprint 2, Sprint 3')
             #print(tsk_list)
             for u in range(len(tsk_list)):
                 try:
@@ -96,22 +95,21 @@ def test_main(driver):
                 counter = gtb.write_to_xls(iss, bgs, dest_file, counter)
             gtb.write_quantity_of_task(dest_file, counter)
         else:
-            generate_report(driver, t)
+            generate_report(driver, t-2)
 
     for z in range(len(filters_npa[1])):
         if filters_npa[0][z] == '10765' or filters_npa[0][z] == '10769':
             pass
         else:
-            pyxl(filters_npa[1][z], filters_npa[2][z], fn)
+            pyxl(filters_npa[1][z-1], filters_npa[2][z], fn)
 
 
 def generate_report(driver, t):
-    driver.get(f'http://jira.it2g.ru/issues/?filter={filters_npa[0][t]}')
-    #driver.find_element_by_xpath(f'//*[@class="filter-link"][@data-id="{filters_npa[0][t]}"]').click()
+    driver.get(f'http://jira.it2g.ru/issues/?filter={filters_npa[0][t+2]}')
     sleep(4)
     curr_page_count, all_tasks = 0, 0
     table_data = []
-    write_data(table_data, filters_npa[1][t-2], 'headers')
+    write_data(table_data, filters_npa[1][t], 'headers')
     try:
         all_tasks = driver.find_element_by_class_name('results-count-total').text
         curr_page_count = driver.find_element_by_class_name('results-count-end').text
@@ -162,13 +160,11 @@ def get_data(driver):
 
         priority = driver.find_elements_by_class_name('priority')
         priority = [x.find_element_by_tag_name('img').get_attribute('alt') for x in priority]
-        #print(priority)
     
         assignee = driver.find_elements_by_class_name('assignee')
         qa_assigned = driver.find_elements_by_css_selector('.customfield_10201')
         sprint = driver.find_elements_by_class_name('fixVersions')
         sprint = [x.text for x in sprint]
-        #sprint = [str(x[0]) for x in sprint]
         print(len(sprint))
     
         for u in range(len(assignee)):

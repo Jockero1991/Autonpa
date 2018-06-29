@@ -17,7 +17,7 @@ def pyxl(p, sh, df):
     reading_txt=[]
     with open(p, "r") as csv_file:
         reader = csv.DictReader(csv_file, delimiter=';')
-        #print(reader[2])
+        
         for line in reader:
             reading_txt.append(line["№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик|Sprint"])
     #print(len(reading_txt))

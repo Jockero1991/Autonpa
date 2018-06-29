@@ -42,13 +42,50 @@ def login(driver):
     return login_data[2]
 
 # Функция возвращает массив задач по фильтру Готово к тестированию
-def get_tasks_list(driver, filter_id):
+def get_tasks_list(driver, filter_id, sprint):
     # Открываем фильтр Готово к тестированию
     driver.get(f'http://jira.it2g.ru/issues/?filter={filter_id}')
     issues = driver.find_elements_by_class_name('issue-link')
     issues = [x.text for x in issues]
     issues = list(filter(lambda x: x!='', issues))
     issues = [issues[x] for x in range(0, len(issues), 2)]
+    correct_iss = []
+    
+    #Проверка версии у задачи перед записью в файл
+    # versions = driver.find_elements_by_class_name('fixVersions')
+    # versions = [x.text for x in versions]
+    # sprint = sprint.split(',')
+    # print(versions)
+    # for x in range(len(issues)):
+    #     if versions[x] in sprint:
+    #         correct_iss.append(issues[x])
+    #     else:
+    #         temp_ver = versions[x].split(',')
+    #         correct_ver = sprint
+    #         print(temp_ver)
+    #         if len(temp_ver) > 1:
+    #             temp_equals, temp_not = [], []
+    #             for y in range(len(temp_ver)):
+    #                 if temp_ver[y] == correct_ver[y]:
+    #                     temp_equals.append(temp_ver[y])
+    #                 else:
+    #                     temp_not.append(temp_ver[y])
+    #             if len(temp_not)>0:
+    #                 not_count = 0
+    #                 for u in range(len(temp_not)):
+    #                     print(temp_not[u])
+    #                     res = temp_not[u].find('Release')
+    #                     print(res)
+    #                     if res:
+    #                         not_count += 1
+    #                 if not_count == 0:
+    #                     correct_iss.append(issues[x])            
+    #         else:
+    #             if temp_ver[0] == correct_ver[1]:
+    #                  correct_iss.append(issues[x])
+    #             else:
+    #                 print('Уточнить версию: ' + versions[x] + ' у задачи: ' + issues[x])
+                
     print(issues)
     return issues
 # Масссив для быстрой отладки скрипта для вкладки тестирование
