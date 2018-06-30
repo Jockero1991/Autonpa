@@ -52,42 +52,15 @@ def get_tasks_list(driver, filter_id, sprint):
     correct_iss = []
     
     #Проверка версии у задачи перед записью в файл
-    # versions = driver.find_elements_by_class_name('fixVersions')
-    # versions = [x.text for x in versions]
-    # sprint = sprint.split(',')
-    # print(versions)
-    # for x in range(len(issues)):
-    #     if versions[x] in sprint:
-    #         correct_iss.append(issues[x])
-    #     else:
-    #         temp_ver = versions[x].split(',')
-    #         correct_ver = sprint
-    #         print(temp_ver)
-    #         if len(temp_ver) > 1:
-    #             temp_equals, temp_not = [], []
-    #             for y in range(len(temp_ver)):
-    #                 if temp_ver[y] == correct_ver[y]:
-    #                     temp_equals.append(temp_ver[y])
-    #                 else:
-    #                     temp_not.append(temp_ver[y])
-    #             if len(temp_not)>0:
-    #                 not_count = 0
-    #                 for u in range(len(temp_not)):
-    #                     print(temp_not[u])
-    #                     res = temp_not[u].find('Release')
-    #                     print(res)
-    #                     if res:
-    #                         not_count += 1
-    #                 if not_count == 0:
-    #                     correct_iss.append(issues[x])            
-    #         else:
-    #             if temp_ver[0] == correct_ver[1]:
-    #                  correct_iss.append(issues[x])
-    #             else:
-    #                 print('Уточнить версию: ' + versions[x] + ' у задачи: ' + issues[x])
+    for y in range(len(issues)):
+        if 'Release 3' not in sprint:
+            correct_iss.append(issues)
+        else:
+            if 'Sprint 2' in sprint or 'Sprint 3' in sprint:
+                correct_iss.append(issues)
                 
     print(issues)
-    return issues
+    return correct_iss
 # Масссив для быстрой отладки скрипта для вкладки тестирование
 # test_arr = ['NPA-1219', 'NPA-1429']
 
