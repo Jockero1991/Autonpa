@@ -94,14 +94,14 @@ def test_main(driver):
 
                 counter = gtb.write_to_xls(iss, bgs, dest_file, counter)
             gtb.write_quantity_of_task(dest_file, counter)
-        else:
-            generate_report(driver, t-2)
+    #     else:
+    #         generate_report(driver, t-2)
 
-    for z in range(len(filters_npa[1])):
-        if filters_npa[0][z] == '10765' or filters_npa[0][z] == '10769':
-            pass
-        else:
-            pyxl(filters_npa[1][z-1], filters_npa[2][z], fn)
+    # for z in range(len(filters_npa[1])):
+    #     if filters_npa[0][z] == '10765' or filters_npa[0][z] == '10769':
+    #         pass
+    #     else:
+    #         pyxl(filters_npa[1][z-1], filters_npa[2][z], fn)
 
 
 def generate_report(driver, t):

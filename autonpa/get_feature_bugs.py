@@ -49,17 +49,27 @@ def get_tasks_list(driver, filter_id, sprint):
     issues = [x.text for x in issues]
     issues = list(filter(lambda x: x!='', issues))
     issues = [issues[x] for x in range(0, len(issues), 2)]
-    correct_iss = []
+    versions = driver.find_elements_by_class_name('fixVersions')
+    versions = [x.text for x in versions]
     
-    #Проверка версии у задачи перед записью в файл
+    correct_iss = []
+    # Вычислить номер следующего релиза
+    next_release = sprint.split(',')
+    # correct_sprints = []
+    # correct_sprints = [correct_sprints.append(x) for next_release[x] in range(1, len(next_release))]
+    next_release = next_release[0]
+    next_r_num = next_release[-1]
+    next_release = 'Release ' + str(int(next_r_num) + 1)
+    print("Следующий релиз: " + next_release)
+
+    # Проверка версии у задачи перед записью в файл
     for y in range(len(issues)):
-        if 'Release 3' not in sprint:
-            correct_iss.append(issues)
+        if next_release not in versions[y] and ('Sprint 2' in versions[y] or 'Sprint 3' in versions[y]):
+            correct_iss.append(issues[y])
         else:
-            if 'Sprint 2' in sprint or 'Sprint 3' in sprint:
-                correct_iss.append(issues)
-                
-    print(issues)
+            print(f'Задача с релизом {next_release}: ' + issues[y])
+            
+    #print(correct_iss)
     return correct_iss
 # Масссив для быстрой отладки скрипта для вкладки тестирование
 # test_arr = ['NPA-1219', 'NPA-1429']
