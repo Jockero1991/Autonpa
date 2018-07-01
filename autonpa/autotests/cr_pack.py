@@ -498,33 +498,36 @@ def negative(sc, cb=0):
 
             if sc[x][y] == 'check':
                 if sc[x][y+1] == 'prime-doc-imported':
+                    try:
+                        #Проверяем добавился ли документ на страницу...
+                        print('Проверяем добавился ли документ на страницу...')
+                        #print(len(driver.find_elements_by_class_name('item-main')))
+                        if len(driver.find_elements_by_class_name('item-main')) == 2:
+                            print('Найден главный документ!')
+                            result = []
+                            #Получаем учетный номер пакета
+                            uch_num = get_uch_num_pack_doc()
+                        
+                            # Подключаемся к бд и раз в секунду проверяем значение id документа
+                            with ps.open(db_conn) as db:
+                                id_value = ''
+                                while(id_value==''):
+                                    sleep(1)
+                                    id_value = db.query("select le.id from lde_event le join document d on d.id=le.document_id join document_package dp on d.document_package_id=dp.id where dp.document_package_number='%s'" % uch_num)[0][0]
+                                    if id_value is not 'Null':
+                                        print(f'В БД получена id документа: {id_value}')
+                                    else:
+                                        print('id документа не получена')
                     
-                    #Проверяем добавился ли документ на страницу...
-                    print('Проверяем добавился ли документ на страницу...')
-                    if len(driver.find_elements_by_class_name('item-main')) == 2:
-                        print('Найден главный документ!')
-                        result = []
-                        #Получаем учетный номер пакета
-                        uch_num = get_uch_num_pack_doc()
-                        
-                        
-                        # Подключаемся к бд и раз в секунду проверяем значение id документа
-                        with ps.open(db_conn) as db:
-                            id_value = ''
-                            while(id_value==''):
-                                sleep(1)
-                                id_value = db.query("select le.id from lde_event le join document d on d.id=le.document_id join document_package dp on d.document_package_id=dp.id where dp.document_package_number='%s'" % uch_num)[0][0]
-                                if id_value is not 'Null':
-                                    print(f'В БД получена id документа: {id_value}')
-                                else:
-                                    print('id документа не получена')
-                    else:
-                        #print('Главный документ не найден! Либо найдено больше 1-го главного документа.')
-                        errors=[]
-                        count = len(driver.find_elements_by_class_name('item-main'))
-                        if len(driver.find_elements_by_class_name('item-main')) > 2:
-                            errors.append(f'Найдено больше одного документа. Документов на странице: {count-1}') # Отнимаем 1 т.к. элемент в доп. материалах тоже попадает под выборку.
-                        return errors
+                        else:
+                            #print('Главный документ не найден! Либо найдено больше 1-го главного документа.')
+                            errors=[]
+                            count = len(driver.find_elements_by_class_name('item-main'))
+                            if len(driver.find_elements_by_class_name('item-main')) > 2:
+                                errors.append(f'Найдено больше одного документа. Документов на странице: {count-1}') # Отнимаем 1 т.к. элемент в доп. материалах тоже попадает под выборку.
+                            return errors
+                    except: 
+                        print('Произошла ошибка при проверке получения id')
                     
 
             if sc[x][y] == 'requisites':
@@ -685,5 +688,5 @@ driver = wd.Chrome(chrome_options=chrome_options, desired_capabilities = caps)
 # negative(scenario_1)
 # negative(scenario_2)
 # negative(scenario_3)
-negative(scenario_4)
-# negative(scenario_5)
+# negative(scenario_4)
+negative(scenario_5)
