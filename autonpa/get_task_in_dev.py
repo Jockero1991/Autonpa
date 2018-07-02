@@ -96,7 +96,7 @@ def write_to_xls(task, df, lr=0):
         # Записываем данные по задаче
         print(len(headers), len(task))
         for col in range(0, len(headers)-1):
-            _ = ws1.cell(column=col+2, row=row, value=task[col])
+            _ = ws1.cell(column=col+2, row=row+1, value=task[col])
 
             ends = f'{get_column_letter(len(headers))}{row+1}'
         #print(f'Финальная ячейка: {ends}')
