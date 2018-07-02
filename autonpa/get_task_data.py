@@ -65,10 +65,10 @@ def test_main(driver):
     sleep(0.5)
     tsk_list, iss = [],[]
     counter = 0
-
+    dest_file = 'data\\' + fn
     for t in range(len(filters_npa[0])):
         counter = 0
-        dest_file = 'data\\' + fn
+        #dest_file = 'data\\' + fn
         if filters_npa[2][t] == 'В разработке':
             # Найти все задачи по фильтру В разработке.
             iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t], 'Release 2, Sprint 2, Sprint 3')
@@ -94,22 +94,41 @@ def test_main(driver):
 
                 counter = gtb.write_to_xls(iss, bgs, dest_file, counter)
             gtb.write_quantity_of_task(dest_file, counter)
+    # В аналитике
+    generate_report(driver, 2)
+    pyxl(filters_npa[1][0], filters_npa[2][2], fn)
+    sleep(1)
+    #Закрытые задачи
+    generate_report(driver, 3)
+    pyxl(filters_npa[1][1], filters_npa[2][3], fn)
+    sleep(1)
+    # Открытые баги
+    generate_report(driver, 4)
+    pyxl(filters_npa[1][2], filters_npa[2][4], fn)
+    sleep(1)
+    # Исправленные баги
+    generate_report(driver, 5)
+    pyxl(filters_npa[1][3], filters_npa[2][5], fn)
+    sleep(1)
+    # Отложенные задачи
+    generate_report(driver, 6)
+    pyxl(filters_npa[1][4], filters_npa[2][6], fn)
     #     else:
     #         generate_report(driver, t-2)
-
+    #
     # for z in range(len(filters_npa[1])):
     #     if filters_npa[0][z] == '10765' or filters_npa[0][z] == '10769':
     #         pass
     #     else:
-    #         pyxl(filters_npa[1][z-1], filters_npa[2][z], fn)
+    #         pyxl(filters_npa[1][z], filters_npa[2][z], fn)
 
 
 def generate_report(driver, t):
-    driver.get(f'http://jira.it2g.ru/issues/?filter={filters_npa[0][t+2]}')
+    driver.get(f'http://jira.it2g.ru/issues/?filter={filters_npa[0][t]}')
     sleep(4)
     curr_page_count, all_tasks = 0, 0
     table_data = []
-    write_data(table_data, filters_npa[1][t], 'headers')
+    write_data(table_data, filters_npa[1][t-2], 'headers')
     try:
         all_tasks = driver.find_element_by_class_name('results-count-total').text
         curr_page_count = driver.find_element_by_class_name('results-count-end').text
@@ -117,7 +136,7 @@ def generate_report(driver, t):
             while int(curr_page_count) < int(all_tasks):
                 table_data = get_data(driver)
                 # Записываем в файл добытые данные...
-                write_data(table_data, filters_npa[1][t], 'data')
+                write_data(table_data, filters_npa[1][t-2], 'data')
                 #print(table_data[0])
                 driver.execute_script('$(".icon-next").click()')
                 sleep(2)
@@ -126,7 +145,7 @@ def generate_report(driver, t):
         if int(curr_page_count) == int(all_tasks):
             table_data = get_data(driver)
             # Записываем в файл добытые данные...
-            write_data(table_data, filters_npa[1][t], 'data', True)
+            write_data(table_data, filters_npa[1][t-2], 'data', True)
             
     except:
         print('нет счетчика задач, задач тоже нет')
