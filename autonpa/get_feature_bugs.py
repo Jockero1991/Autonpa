@@ -224,7 +224,7 @@ def tsk_data(driver, issue):
     task_res.append(str(driver.find_element_by_id('priority-val').text))
     task_res.append(str(driver.find_element_by_id('status-val').text))
     task_res.append(str(driver.find_element_by_id('summary-val').text))
-    task_res.append(str(driver.find_element_by_xpath('//*[@id="customfield_10201-val"]/span').text))
+    task_res.append(str(driver.find_element_by_xpath('//*[@id="customfield_10201-val"]').text))
     task_res.append(str(driver.find_element_by_id('fixfor-val').text))
     print(task_res)
     return task_res

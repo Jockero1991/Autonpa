@@ -80,38 +80,38 @@ def test_main(driver):
                 # Вызываем функцию записи в файл.
                 counter = gtid.write_to_xls(iss, dest_file, counter)
         print(filters_npa[2][t])
-        if filters_npa[2][t] == 'В тестировании':
-            tsk_list = gtb.get_tasks_list(driver, '10769', 'Release 2, Sprint 2, Sprint 3')
-            #print(tsk_list)
-            for u in range(len(tsk_list)):
-                try:
-                    bgs = gtb.search_data(driver, tsk_list[u])
-                except:
-                    print('Связанных багов нет.')
-                    bgs = []
-                iss = gtb.tsk_data(driver, tsk_list[u])
-
-                counter = gtb.write_to_xls(iss, bgs, dest_file, counter)
-            gtb.write_quantity_of_task(dest_file, counter)
-    # В аналитике
-    generate_report(driver, 2)
-    pyxl(filters_npa[1][0], filters_npa[2][2], fn)
-    sleep(1)
-    #Закрытые задачи
-    generate_report(driver, 3)
-    pyxl(filters_npa[1][1], filters_npa[2][3], fn)
-    sleep(1)
-    # Открытые баги
-    generate_report(driver, 4)
-    pyxl(filters_npa[1][2], filters_npa[2][4], fn)
-    sleep(1)
-    # Исправленные баги
-    generate_report(driver, 5)
-    pyxl(filters_npa[1][3], filters_npa[2][5], fn)
-    sleep(1)
-    # Отложенные задачи
-    generate_report(driver, 6)
-    pyxl(filters_npa[1][4], filters_npa[2][6], fn)
+        # if filters_npa[2][t] == 'В тестировании':
+        #     tsk_list = gtb.get_tasks_list(driver, '10769', 'Release 2, Sprint 2, Sprint 3')
+        #     #print(tsk_list)
+        #     for u in range(len(tsk_list)):
+        #         try:
+        #             bgs = gtb.search_data(driver, tsk_list[u])
+        #         except:
+        #             print('Связанных багов нет.')
+        #             bgs = []
+        #         iss = gtb.tsk_data(driver, tsk_list[u])
+        #
+        #         counter = gtb.write_to_xls(iss, bgs, dest_file, counter)
+        #     gtb.write_quantity_of_task(dest_file, counter)
+    # # В аналитике
+    # generate_report(driver, 2)
+    # pyxl(filters_npa[1][0], filters_npa[2][2], fn)
+    # sleep(1)
+    # #Закрытые задачи
+    # generate_report(driver, 3)
+    # pyxl(filters_npa[1][1], filters_npa[2][3], fn)
+    # sleep(1)
+    # # Открытые баги
+    # generate_report(driver, 4)
+    # pyxl(filters_npa[1][2], filters_npa[2][4], fn)
+    # sleep(1)
+    # # Исправленные баги
+    # generate_report(driver, 5)
+    # pyxl(filters_npa[1][3], filters_npa[2][5], fn)
+    # sleep(1)
+    # # Отложенные задачи
+    # generate_report(driver, 6)
+    # pyxl(filters_npa[1][4], filters_npa[2][6], fn)
 
 
 
