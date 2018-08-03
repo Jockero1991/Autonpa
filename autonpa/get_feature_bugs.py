@@ -64,7 +64,7 @@ def get_tasks_list(driver, filter_id, sprint):
 
     # Проверка версии у задачи перед записью в файл
     for y in range(len(issues)):
-        if next_release not in versions[y] and ('Sprint 2' in versions[y] or 'Sprint 3' in versions[y]):
+        if next_release not in versions[y] or ('Sprint 2' in versions[y] or 'Sprint 3' in versions[y]):
             correct_iss.append(issues[y])
         else:
             print(f'Задача с релизом {next_release}: ' + issues[y])
