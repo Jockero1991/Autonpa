@@ -43,8 +43,7 @@ filters_npa = [
 "10772", # Закрытые баги
 "10773"  # Отложенные задачи
 ],
- [#'data\в_разработке.csv',
- #'data\в_тестировании.csv',
+ [
  'data\в_аналитике.csv',
  'data\закрытые_задачи.csv',
  'data\Открытые_баги.csv', 'data\закрытые_баги.csv', 'data\отложенные задачи.csv'
@@ -71,7 +70,7 @@ def test_main(driver):
         #dest_file = 'data\\' + fn
         if filters_npa[2][t] == 'В разработке':
             # Найти все задачи по фильтру В разработке.
-            iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t], 'Release 2, Sprint 2, Sprint 3')
+            iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t], 'Release 3, ')
 
             # Находим данные по каждой задаче и записываем их в итоговую таблицу
             #count = 0
@@ -82,7 +81,7 @@ def test_main(driver):
                 counter = gtid.write_to_xls(iss, dest_file, counter)
         print(filters_npa[2][t])
         if filters_npa[2][t] == 'В тестировании':
-            tsk_list = gtb.get_tasks_list(driver, '10769', 'Release 2, Sprint 2, Sprint 3')
+            tsk_list = gtb.get_tasks_list(driver, '10769', 'Release 3, ')
             #print(tsk_list)
             for u in range(len(tsk_list)):
                 try:
@@ -102,7 +101,7 @@ def test_main(driver):
     generate_report(driver, 3)
     pyxl(filters_npa[1][1], filters_npa[2][3], fn)
     sleep(1)
-    # Открытые баги
+    #Открытые баги
     generate_report(driver, 4)
     pyxl(filters_npa[1][2], filters_npa[2][4], fn)
     sleep(1)
@@ -113,14 +112,7 @@ def test_main(driver):
     # Отложенные задачи
     generate_report(driver, 6)
     pyxl(filters_npa[1][4], filters_npa[2][6], fn)
-    #     else:
-    #         generate_report(driver, t-2)
-    #
-    # for z in range(len(filters_npa[1])):
-    #     if filters_npa[0][z] == '10765' or filters_npa[0][z] == '10769':
-    #         pass
-    #     else:
-    #         pyxl(filters_npa[1][z], filters_npa[2][z], fn)
+
 
 
 def generate_report(driver, t):

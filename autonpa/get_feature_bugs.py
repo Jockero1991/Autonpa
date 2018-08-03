@@ -49,45 +49,28 @@ def get_tasks_list(driver, filter_id, sprint):
     issues = [x.text for x in issues]
     issues = list(filter(lambda x: x!='', issues))
     issues = [issues[x] for x in range(0, len(issues), 2)]
-    correct_iss = []
+    versions = driver.find_elements_by_class_name('fixVersions')
+    versions = [x.text for x in versions]
     
-    #Проверка версии у задачи перед записью в файл
-    # versions = driver.find_elements_by_class_name('fixVersions')
-    # versions = [x.text for x in versions]
-    # sprint = sprint.split(',')
-    # print(versions)
-    # for x in range(len(issues)):
-    #     if versions[x] in sprint:
-    #         correct_iss.append(issues[x])
-    #     else:
-    #         temp_ver = versions[x].split(',')
-    #         correct_ver = sprint
-    #         print(temp_ver)
-    #         if len(temp_ver) > 1:
-    #             temp_equals, temp_not = [], []
-    #             for y in range(len(temp_ver)):
-    #                 if temp_ver[y] == correct_ver[y]:
-    #                     temp_equals.append(temp_ver[y])
-    #                 else:
-    #                     temp_not.append(temp_ver[y])
-    #             if len(temp_not)>0:
-    #                 not_count = 0
-    #                 for u in range(len(temp_not)):
-    #                     print(temp_not[u])
-    #                     res = temp_not[u].find('Release')
-    #                     print(res)
-    #                     if res:
-    #                         not_count += 1
-    #                 if not_count == 0:
-    #                     correct_iss.append(issues[x])            
-    #         else:
-    #             if temp_ver[0] == correct_ver[1]:
-    #                  correct_iss.append(issues[x])
-    #             else:
-    #                 print('Уточнить версию: ' + versions[x] + ' у задачи: ' + issues[x])
-                
-    print(issues)
-    return issues
+    correct_iss = []
+    # Вычислить номер следующего релиза
+    next_release = sprint.split(',')
+    # correct_sprints = []
+    # correct_sprints = [correct_sprints.append(x) for next_release[x] in range(1, len(next_release))]
+    next_release = next_release[0]
+    next_r_num = next_release[-1]
+    next_release = 'Release ' + str(int(next_r_num) + 1)
+    print("Следующий релиз: " + next_release)
+
+    # Проверка версии у задачи перед записью в файл
+    for y in range(len(issues)):
+        if next_release not in versions[y] or ('Sprint 2' in versions[y] or 'Sprint 3' in versions[y]):
+            correct_iss.append(issues[y])
+        else:
+            print(f'Задача с релизом {next_release}: ' + issues[y])
+            
+    #print(correct_iss)
+    return correct_iss
 # Масссив для быстрой отладки скрипта для вкладки тестирование
 # test_arr = ['NPA-1219', 'NPA-1429']
 
@@ -241,7 +224,7 @@ def tsk_data(driver, issue):
     task_res.append(str(driver.find_element_by_id('priority-val').text))
     task_res.append(str(driver.find_element_by_id('status-val').text))
     task_res.append(str(driver.find_element_by_id('summary-val').text))
-    task_res.append(str(driver.find_element_by_xpath('//*[@id="customfield_10201-val"]/span').text))
+    task_res.append(str(driver.find_element_by_xpath('//*[@id="customfield_10201-val"]').text))
     task_res.append(str(driver.find_element_by_id('fixfor-val').text))
     print(task_res)
     return task_res

@@ -101,7 +101,7 @@ def write_to_xls(task, df, lr=0):
             ends = f'{get_column_letter(len(headers))}{row+1}'
         #print(f'Финальная ячейка: {ends}')
 
-        lr = row
+        lr = row-1
     rang = f'{starts}:{ends}'
     print(rang)
     #gtb.style_range(ws1, rang, border=border)
