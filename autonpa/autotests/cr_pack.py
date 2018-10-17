@@ -182,7 +182,7 @@ with open('conn.txt', "r") as conf:
 menu_item = '//*[@id="create_list"]'
 
 dd_list = [
-'//*[@id="type-project__result"]', # Тип проекта
+'//*[@id="type-project"]', # Тип проекта
 '//*[@id="status-project__result"]', # Статус
 '//*[@id="aproval-form__result"]', # Формат утверждения
 '//*[@id="review-type__result"]', # Тип рассмотрения
@@ -236,8 +236,8 @@ myLogging(f, 'Открываем Chrome')
 chrome_options = Options()
 chrome_options.add_argument("--window-size=1920,1080")
 caps=DesiredCapabilities.CHROME
-#caps['loggingPrefs']={'browser': 'ALL'}
-caps['loggingPrefs'] = {'performance': 'ALL'}
+caps['loggingPrefs']={'browser': 'ALL'}
+#caps['loggingPrefs'] = {'performance': 'ALL'}
 
 #driver = wd.Chrome(chrome_options=chrom e_options)
 
@@ -402,14 +402,14 @@ scenario_4=[
     [7, 'text', '//*[@id="reasonRegistrationNumber"]', '11-3254/90'], # Номер поручения
     [8, 'datapicker', '//*[@id="reasonReceiveDate"]', '15 08 2017'], # Дата поручения
     [9, 'text', '//*[@id="reasonInitiator"]', 'Иванов В. В.'], # Инициатор
-    [10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]'], # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
+    #[10, 'button', 'вопрос внесен. добавить сотрудника', '//*[@id="requisites"]//button[1]'], # Основные реквизиты. Вопрос внесен кнопка Добавить сотрудника
     [11, 'dropdown', dd_list[2], format_u[0], s_spravoch[3][0]], # Выбираем формат утверждение Заседание ПМ
     [12, 'datapicker', '//*[@id="plannedReviewDate"]', '14 05 2018'], # Заполняем планируемую дату рассмотрения
     [13, 'text', '//*[@id="reviewReason"]', 'Рассмотрение необходимо провести для соблюдения поправки в законе о постановлениях правительства Мэрии г. Москвы.'], # Заполняем обоснование рассмотрение
     [14, 'button', 'add-review', '//*[@id="add-review"]'], # Добавляем рассмотрение
     [15, 'datapicker', '//*[@id="subpoenaDate"]', '16 05 2018'], # Заполняем дату повестки
     [16, 'dropdown', dd_list[3], review_type[0], s_spravoch[4][0]],
-    [17, 'requisites', 1], # основные реквизиты по 1-му сотруднику в подразделе
+    #[17, 'requisites', 1], # основные реквизиты по 1-му сотруднику в подразделе
     [18, 'quit'] # Закрыть браузер
 ]
 
@@ -419,7 +419,7 @@ scenario_5 = [ # создание пакета с 3-мя обязательны�
     [2, 'new_pack', 0, 0], # инициируем создание пакета.
     [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
     [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
-    [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование 
+    [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование
     [6, 'button', 'save', '//*[@id="save-button"]'], # нажимаем Сохранить
     [7, 'pop-up-success', 'success-popup__text', 'middle-button'], # Проверяем сообщение системы после сохранения пакета, и нажимаем кнопку ОК
     #[7, 'alert'], # ищем алерт, считываеем и проверяем текст алерта, нажимаем ок.
@@ -445,15 +445,17 @@ def negative(sc, cb=0):
     stack_result = []
     stack_errors = []
     exp_values = []
-    
+    wait= WebDriverWait(driver, 15)
     for x in range(len(sc)):
         #get_browser_logs('performance')
         for y in range(len(sc[x])):
 
             if sc[x][y] =='oib':
-                ms.waiting('presence_of_element_located', 'ID', 'login', 3, 0).send_keys(sc[x][y+1])
-                ms.waiting('presence_of_element_located', 'ID', 'password', 3, 0).send_keys(sc[x][y+2])
-                ms.waiting('presence_of_element_located', 'ID', 'id1', 3, 0).click()
+                wait.until(EC.element_to_be_clickable((By.ID, 's2id_user'))).click()
+                wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'select2-input'))).send_keys(sc[x][y+1])
+                wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'select2-result-label'))).click()
+                wait.until(EC.element_to_be_clickable((By.ID, 'password'))).send_keys('123456')
+                wait.until(EC.element_to_be_clickable((By.ID, 'id1'))).click()
 
             if sc[x][y] == 'page':
                 driver.get(sc[x][y+1])
@@ -530,35 +532,35 @@ def negative(sc, cb=0):
                         print('Произошла ошибка при проверке получения id')
                     
 
-            if sc[x][y] == 'requisites':
-                wait = WebDriverWait(driver, 10)
-                add_emps=[]
-                add_emps = driver.find_elements_by_class_name('add-button')
-                
-                # нажимаем кнопки Добавить сотрудника для каждого блока (sc[x][y+1])-раз
-                for _ in range(sc[x][y+1]):
-                    add_emps[0].click()
-                    add_emps[1].click()
-                    add_emps[2].click()
-                
-                drops = driver.find_elements_by_id('__result')
-                org = []
-                job_list=[]
-                empls = []
-
-                org = [drops[n] for n in range(0, (len(drops)-1), 3)]
-                job_positions = [drops[n] for n in range(1, len(drops), 3)]
-                emps = [drops[n] for n in range(2, len(drops), 3)]
-                #print(len(drops))
-                
-                
-                driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div').click()
-                sleep(1)
-                driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div/div[3]/div/div[1]').click()
-                # Последовательно вызываем функцию чтобы после каждого выбора элементов 
-                job_list = requisite(dr=org, nth=7)
-                empls = requisite(dr=job_positions, ls=job_list)
-                requisite(dr=emps, ls=empls)            
+            # if sc[x][y] == 'requisites':
+            #     wait = WebDriverWait(driver, 10)
+            #     add_emps=[]
+            #     add_emps = driver.find_elements_by_class_name('add-button')
+            #
+            #     # нажимаем кнопки Добавить сотрудника для каждого блока (sc[x][y+1])-раз
+            #     for _ in range(sc[x][y+1]):
+            #         add_emps[0].click()
+            #         add_emps[1].click()
+            #         add_emps[2].click()
+            #
+            #     drops = driver.find_elements_by_id('__result')
+            #     org = []
+            #     job_list=[]
+            #     empls = []
+            #
+            #     org = [drops[n] for n in range(0, (len(drops)-1), 3)]
+            #     job_positions = [drops[n] for n in range(1, len(drops), 3)]
+            #     emps = [drops[n] for n in range(2, len(drops), 3)]
+            #     #print(len(drops))
+            #
+            #
+            #     driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div').click()
+            #     sleep(1)
+            #     driver.find_element_by_xpath('//*[@id="requisites"]/app-participant-requisites-form/div[2]/div/app-autocomplete/div/div/div/div[3]/div/div[1]').click()
+            #     # Последовательно вызываем функцию чтобы после каждого выбора элементов
+            #     job_list = requisite(dr=org, nth=7)
+            #     empls = requisite(dr=job_positions, ls=job_list)
+            #     requisite(dr=emps, ls=empls)
             
             if sc[x][y] == 'prime-doc' and sc[x][y+1] == 'import':
                 # переход по ссылке Состав пакета

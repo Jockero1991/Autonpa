@@ -63,14 +63,14 @@ def test_main(driver):
     driver.get('http://jira.it2g.ru/issues/?jql=')
     sleep(0.5)
     tsk_list, iss = [],[]
-    counter = 0
+    #counter = 0
     dest_file = 'data\\' + fn
     for t in range(len(filters_npa[0])):
         counter = 0
         #dest_file = 'data\\' + fn
         if filters_npa[2][t] == 'В разработке':
             # Найти все задачи по фильтру В разработке.
-            iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t], 'Release 3, ')
+            iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t], 'Release 4, ')
 
             # Находим данные по каждой задаче и записываем их в итоговую таблицу
             #count = 0
@@ -81,7 +81,7 @@ def test_main(driver):
                 counter = gtid.write_to_xls(iss, dest_file, counter)
         print(filters_npa[2][t])
         if filters_npa[2][t] == 'В тестировании':
-            tsk_list = gtb.get_tasks_list(driver, '10769', 'Release 3, ')
+            tsk_list = gtb.get_tasks_list(driver, '10769', 'Release 4, ')
             #print(tsk_list)
             for u in range(len(tsk_list)):
                 try:

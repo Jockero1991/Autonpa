@@ -51,7 +51,8 @@ def get_tasks_list(driver, filter_id, sprint):
     issues = [issues[x] for x in range(0, len(issues), 2)]
     versions = driver.find_elements_by_class_name('fixVersions')
     versions = [x.text for x in versions]
-    
+    print(versions)
+
     correct_iss = []
     # Вычислить номер следующего релиза
     next_release = sprint.split(',')
@@ -64,7 +65,7 @@ def get_tasks_list(driver, filter_id, sprint):
 
     # Проверка версии у задачи перед записью в файл
     for y in range(len(issues)):
-        if next_release not in versions[y] or ('Sprint 2' in versions[y] or 'Sprint 3' in versions[y]):
+        if next_release not in versions[y] or ('Sprint 2' not in versions[y] or 'Sprint 3' not in versions[y]):
             correct_iss.append(issues[y])
         else:
             print(f'Задача с релизом {next_release}: ' + issues[y])
