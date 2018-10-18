@@ -70,7 +70,7 @@ def test_main(driver):
         #dest_file = 'data\\' + fn
         if filters_npa[2][t] == 'В разработке':
             # Найти все задачи по фильтру В разработке.
-            iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t], 'Release 4, ')
+            iss_lst = gtb.get_tasks_list(driver, filters_npa[0][t], 'Release 5, ')
 
             # Находим данные по каждой задаче и записываем их в итоговую таблицу
             #count = 0
@@ -78,40 +78,92 @@ def test_main(driver):
                 iss = gtid.dev_tsk_data(driver, iss_lst[x])
 
                 # Вызываем функцию записи в файл.
-                counter = gtid.write_to_xls(iss, dest_file, counter)
+                counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
         print(filters_npa[2][t])
+
         if filters_npa[2][t] == 'В тестировании':
-            tsk_list = gtb.get_tasks_list(driver, '10769', 'Release 4, ')
+            tsk_list = gtb.get_tasks_list(driver, "10769", 'Release 5, ')
             #print(tsk_list)
             for u in range(len(tsk_list)):
-                try:
-                    bgs = gtb.search_data(driver, tsk_list[u])
-                except:
-                    print('Связанных багов нет.')
-                    bgs = []
-                iss = gtb.tsk_data(driver, tsk_list[u])
+                # try:
+                #     bgs = gtb.search_data(driver, tsk_list[u])
+                # except:
+                #     print('Связанных багов нет.')
+                #     bgs = []
+                iss = gtid.dev_tsk_data(driver, tsk_list[u])
+                counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
+            #gtb.write_quantity_of_task(dest_file, counter)
+        # В аналитике
+        if filters_npa[2][t] == 'В аналитике':
+            tsk_list = gtb.get_tasks_list(driver, "10766", 'Release 5, ')
+            #print(tsk_list)
+            for u in range(len(tsk_list)):
 
-                counter = gtb.write_to_xls(iss, bgs, dest_file, counter)
-            gtb.write_quantity_of_task(dest_file, counter)
-    # В аналитике
-    generate_report(driver, 2)
-    pyxl(filters_npa[1][0], filters_npa[2][2], fn)
-    sleep(1)
+                iss = gtid.dev_tsk_data(driver, tsk_list[u])
+
+                counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
+
+    # Архивный код
+    # generate_report(driver, 2)
+    # pyxl(filters_npa[1][0], filters_npa[2][2], fn)
+    # sleep(1)
+
     #Закрытые задачи
-    generate_report(driver, 3)
-    pyxl(filters_npa[1][1], filters_npa[2][3], fn)
-    sleep(1)
+        if filters_npa[2][t] == 'Готовые задачи':
+            tsk_list = gtb.get_tasks_list(driver, "10767", 'Release 5, ')
+            #print(tsk_list)
+            for u in range(len(tsk_list)):
+
+                iss = gtid.dev_tsk_data(driver, tsk_list[u])
+
+                counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
+
+    # Архивный код
+    # generate_report(driver, 3)
+    # pyxl(filters_npa[1][1], filters_npa[2][3], fn)
+    # sleep(1)
+
     #Открытые баги
-    generate_report(driver, 4)
-    pyxl(filters_npa[1][2], filters_npa[2][4], fn)
-    sleep(1)
+        if filters_npa[2][t] == 'Открытые баги':
+            tsk_list = gtb.get_tasks_list(driver, "10770", 'Release 5, ')
+            #print(tsk_list)
+            for u in range(len(tsk_list)):
+
+                iss = gtid.dev_tsk_data(driver, tsk_list[u])
+
+                counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
+
+    # Архивный код
+    # generate_report(driver, 4)
+    # pyxl(filters_npa[1][2], filters_npa[2][4], fn)
+    # sleep(1)
+
     # Исправленные баги
-    generate_report(driver, 5)
-    pyxl(filters_npa[1][3], filters_npa[2][5], fn)
-    sleep(1)
+        if filters_npa[2][t] == 'Исправленные баги':
+            tsk_list = gtb.get_tasks_list(driver, "10772", 'Release 5, ')
+            #print(tsk_list)
+            for u in range(len(tsk_list)):
+
+                iss = gtid.dev_tsk_data(driver, tsk_list[u])
+
+                counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
+    # Архивный код
+    # generate_report(driver, 5)
+    # pyxl(filters_npa[1][3], filters_npa[2][5], fn)
+    # sleep(1)
+
     # Отложенные задачи
-    generate_report(driver, 6)
-    pyxl(filters_npa[1][4], filters_npa[2][6], fn)
+        if filters_npa[2][t] == 'Отложеные,отклоненные':
+            tsk_list = gtb.get_tasks_list(driver, "10773", 'Release 5, ')
+            #print(tsk_list)
+            for u in range(len(tsk_list)):
+
+                iss = gtid.dev_tsk_data(driver, tsk_list[u])
+
+                counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
+    # Архивный код
+    # generate_report(driver, 6)
+    # pyxl(filters_npa[1][4], filters_npa[2][6], fn)
 
 
 

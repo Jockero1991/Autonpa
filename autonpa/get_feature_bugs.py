@@ -43,7 +43,7 @@ def login(driver):
 
 # Функция возвращает массив задач по фильтру Готово к тестированию
 def get_tasks_list(driver, filter_id, sprint):
-    # Открываем фильтр Готово к тестированию
+    # Открываем фильтр по его айди
     driver.get(f'http://jira.it2g.ru/issues/?filter={filter_id}')
     issues = driver.find_elements_by_class_name('issue-link')
     issues = [x.text for x in issues]
@@ -51,7 +51,7 @@ def get_tasks_list(driver, filter_id, sprint):
     issues = [issues[x] for x in range(0, len(issues), 2)]
     versions = driver.find_elements_by_class_name('fixVersions')
     versions = [x.text for x in versions]
-    print(versions)
+    print(issues, versions)
 
     correct_iss = []
     # Вычислить номер следующего релиза
@@ -60,12 +60,13 @@ def get_tasks_list(driver, filter_id, sprint):
     # correct_sprints = [correct_sprints.append(x) for next_release[x] in range(1, len(next_release))]
     next_release = next_release[0]
     next_r_num = next_release[-1]
+    print(next_release)
     next_release = 'Release ' + str(int(next_r_num) + 1)
     print("Следующий релиз: " + next_release)
 
     # Проверка версии у задачи перед записью в файл
     for y in range(len(issues)):
-        if next_release not in versions[y] or ('Sprint 2' not in versions[y] or 'Sprint 3' not in versions[y]):
+        if next_release not in versions[y]: #or ('Sprint 2' not in versions[y] or 'Sprint 3' not in versions[y]):
             correct_iss.append(issues[y])
         else:
             print(f'Задача с релизом {next_release}: ' + issues[y])

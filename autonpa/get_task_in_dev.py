@@ -59,7 +59,7 @@ def dev_tsk_data(driver, issue):
 
 
 # Запись в файл эксель данных по задаче и по связанным багам
-def write_to_xls(task, df, lr=0):
+def write_to_xls(task, df, page_name, lr=0):
     headers = [
         '№ задачи Jira',
         'Трекер',
@@ -80,7 +80,7 @@ def write_to_xls(task, df, lr=0):
 
     wb = lw(df)
     #ws1 = wb["TEST"]
-    ws1 = wb["В разработке"]
+    ws1 = wb[page_name]
 
     #Есть задача, файл назначения и номер строки (который передаем)
     starts, ends = '', ''
