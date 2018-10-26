@@ -41,7 +41,7 @@ def login(driver):
     driver.find_element_by_id('login-form-submit').click()
     return login_data[2]
 
-# Функция возвращает массив задач по фильтру Готово к тестированию
+# Функция возвращает массив задач по фильтру filter_id
 def get_tasks_list(driver, filter_id, sprint):
     # Открываем фильтр по его айди
     driver.get(f'http://jira.it2g.ru/issues/?filter={filter_id}')

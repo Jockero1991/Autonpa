@@ -47,13 +47,25 @@ def dev_tsk_data(driver, issue):
     sleep(3)
     driver.get(f'http://jira.it2g.ru/browse/{issue}')
 
-    task_res.append(issue)
-    task_res.append(str(driver.find_element_by_id('type-val').text))
-    task_res.append(str(driver.find_element_by_id('status-val').text))
-    task_res.append(str(driver.find_element_by_id('priority-val').text))
+    # Тема
     task_res.append(str(driver.find_element_by_id('summary-val').text))
+
+    # Номер в Jira
+    task_res.append(issue)
+
+    # Тип задачи
+    # task_res.append(str(driver.find_element_by_id('type-val').text))
+    # Статус
+    # task_res.append(str(driver.find_element_by_id('status-val').text))
+
+    # Приоритет
+    task_res.append(str(driver.find_element_by_id('priority-val').text))
+
+    # Исполнитель
     task_res.append(str(driver.find_element_by_id('assignee-val').text))
-    task_res.append(str(driver.find_element_by_id('fixfor-val').text))
+
+    # Исправить в версии
+    # task_res.append(str(driver.find_element_by_id('fixfor-val').text))
     print(task_res)
     return task_res
 
@@ -61,14 +73,15 @@ def dev_tsk_data(driver, issue):
 # Запись в файл эксель данных по задаче и по связанным багам
 def write_to_xls(task, df, page_name, lr=0):
     headers = [
-        '№ задачи Jira',
-        'Трекер',
-        'Статус',
-        'Приоритет',
         'Тема:',
-        'Исполнитель',
-        'Версия',
-        'Количество задач'
+        '№ задачи Jira',
+        # 'Трекер',
+        # 'Статус',
+        'Приоритет',
+
+        'Исполнитель'
+        #'Версия',
+        #'Количество задач'
     ]
 
 
@@ -94,8 +107,8 @@ def write_to_xls(task, df, page_name, lr=0):
                 # if col == (len(headers)-1):
                 #     _=ws1.cell(column = col+2, row=row+1, value='=СЧЁТЗ(F3:F30)')
         # Записываем данные по задаче
-        print(len(headers), len(task))
-        for col in range(0, len(headers)-1):
+        #print(len(headers), len(task))
+        for col in range(0, len(headers)):
             _ = ws1.cell(column=col+2, row=row+1, value=task[col])
 
             ends = f'{get_column_letter(len(headers))}{row+1}'
