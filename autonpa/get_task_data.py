@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.action_chains import ActionChains as ac
 from selenium.webdriver.common.keys import Keys as ks
 from datetime import datetime as dt
@@ -17,6 +18,14 @@ from openpyxl.utils import get_column_letter
 from test_pyxl_lib import pyxl
 import get_feature_bugs as gtb
 import get_task_in_dev as gtid
+import datetime
+
+
+# chrome_options = Options()
+# chrome_options.add_argument("--window-size=1920,1080")
+# caps=DesiredCapabilities.CHROME
+# caps['loggingPrefs']={'browser': 'ALL'}
+
 
 @pytest.fixture
 def driver(request):
@@ -28,11 +37,6 @@ def driver(request):
     request.addfinalizer(wd.quit)
     return wd
 
-# Фича-лист
-# - добавить поле исправлено в версии (добавил)
-# - Кастомизировать выгрузку под каждую вкладку отчета(кастомизировал только для вкладки в тестировании).
-# - На очереди вкладка В разработке (кастомизировал).
-# - На очереди остальные вкладки
 
 filters_npa = [
 ["10765",  # задачи в разработке
@@ -57,8 +61,79 @@ filters_npa = [
  ]
 
 test_arr = ['NPA-1219', 'NPA-1429']
+mode = ['proj_status', 'bugs']
 
-def test_main(driver):
+
+
+# Необходимые доработки:
+# отцентровать значения в объединенных ячейках due_date: 05.12.18
+# убрать пустую строчку, если в аналитике или в разработке нет задач
+# настроить выполнение файла в зависимости от мода.
+
+
+def test_new_main(driver):
+    all_issues = []
+    counter = 0
+    fn, page ='', ''
+    pr_data = gtb.login(driver)
+    print(pr_data)
+
+    for r in range(len(pr_data)):
+        all_issues=[]
+        counter = 0
+        if 'bugs' in pr_data[r]:
+            #pass
+            fn = gtb.cr_file_xls("data\\" + "Список дефектов ИС УСД ПМ " + str(datetime.date.today()) + ".xlsx")
+            print(fn)
+            page = fn[1]
+            fn = fn[0]
+            filters_ids=[pr_data[r][x] for x in range(2, len(pr_data[r]))]
+            print(filters_ids)
+            all_issues = gtb.get_tasks_list(driver, filters_ids[0],'','bugs')
+            print(all_issues)
+            for y in range(len(all_issues)):
+                print(all_issues[y])
+                task_details = gtid.dev_tsk_data(driver, all_issues[y], 'bugs')
+                counter = gtid.write_to_xls(task_details, fn, page, counter, 'bugs')
+        else:
+            if 'proj_status' in pr_data[r]:
+                fn = gtb.cr_file_xls("data\\" + pr_data[r][0] + "_Отчет за " + str(datetime.date.today()) + ".xlsx")
+                print(fn)
+                page = fn[1]
+                fn = fn[0]
+                filters_ids=[pr_data[r][x] for x in range(3, len(pr_data[r]))]
+                print(filters_ids)
+
+                driver.get('http://jira.it2g.ru/issues/?jql=')
+
+                for x in range(len(filters_ids)):
+                    if x == 0:
+                        all_issues.append('В аналитике')
+                    if x == 1:
+                        all_issues.append('В разработке')
+                    if x == 2:
+                        all_issues.append('В тестировании')
+                    temp_issues = gtb.get_tasks_list(driver, filters_ids[x], pr_data[0][1])
+                    all_issues.append(temp_issues)
+                print(all_issues)
+                for y in range(len(all_issues)):
+                    if type(all_issues[y]) is str:
+                        #print(all_issues[y])
+                        counter = gtid.write_to_xls(all_issues[y], fn, page, counter)
+                    else:
+                        for z in range(len(all_issues[y])):
+                            print(all_issues[y][z])
+                            task_details = gtid.dev_tsk_data(driver, all_issues[y][z])
+                            counter = gtid.write_to_xls(task_details, fn, page, counter)
+                #print(all_issues[y])
+
+
+
+
+
+
+
+def old_main(driver):
     fn = str(gtb.login(driver))
     driver.get('http://jira.it2g.ru/issues/?jql=')
     sleep(0.5)
@@ -103,10 +178,6 @@ def test_main(driver):
 
                 counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
 
-    # Архивный код
-    # generate_report(driver, 2)
-    # pyxl(filters_npa[1][0], filters_npa[2][2], fn)
-    # sleep(1)
 
     # #Закрытые задачи
     #     if filters_npa[2][t] == 'Готовые задачи':
@@ -118,10 +189,6 @@ def test_main(driver):
     #
     #             counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
     #
-    # # Архивный код
-    # # generate_report(driver, 3)
-    # # pyxl(filters_npa[1][1], filters_npa[2][3], fn)
-    # # sleep(1)
     #
     # #Открытые баги
     #     if filters_npa[2][t] == 'Открытые баги':
@@ -133,10 +200,6 @@ def test_main(driver):
     #
     #             counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
     #
-    # # Архивный код
-    # # generate_report(driver, 4)
-    # # pyxl(filters_npa[1][2], filters_npa[2][4], fn)
-    # # sleep(1)
     #
     # # Исправленные баги
     #     if filters_npa[2][t] == 'Исправленные баги':
@@ -147,10 +210,7 @@ def test_main(driver):
     #             iss = gtid.dev_tsk_data(driver, tsk_list[u])
     #
     #             counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
-    # # Архивный код
-    # # generate_report(driver, 5)
-    # # pyxl(filters_npa[1][3], filters_npa[2][5], fn)
-    # # sleep(1)
+
     #
     # # Отложенные задачи
     #     if filters_npa[2][t] == 'Отложеные,отклоненные':
@@ -161,109 +221,6 @@ def test_main(driver):
     #             iss = gtid.dev_tsk_data(driver, tsk_list[u])
     #
     #             counter = gtid.write_to_xls(iss, dest_file, filters_npa[2][t], counter)
-    # Архивный код
-    # generate_report(driver, 6)
-    # pyxl(filters_npa[1][4], filters_npa[2][6], fn)
 
 
-# Архивный код
-# def generate_report(driver, t):
-#     driver.get(f'http://jira.it2g.ru/issues/?filter={filters_npa[0][t]}')
-#     sleep(4)
-#     curr_page_count, all_tasks = 0, 0
-#     table_data = []
-#     write_data(table_data, filters_npa[1][t-2], 'headers')
-#     try:
-#         all_tasks = driver.find_element_by_class_name('results-count-total').text
-#         curr_page_count = driver.find_element_by_class_name('results-count-end').text
-#         if int(curr_page_count) < int(all_tasks):
-#             while int(curr_page_count) < int(all_tasks):
-#                 table_data = get_data(driver)
-#                 # Записываем в файл добытые данные...
-#                 write_data(table_data, filters_npa[1][t-2], 'data')
-#                 #print(table_data[0])
-#                 driver.execute_script('$(".icon-next").click()')
-#                 sleep(2)
-#                 all_tasks = driver.find_element_by_class_name('results-count-total').text
-#                 curr_page_count = driver.find_element_by_class_name('results-count-end').text
-#         if int(curr_page_count) == int(all_tasks):
-#             table_data = get_data(driver)
-#             # Записываем в файл добытые данные...
-#             write_data(table_data, filters_npa[1][t-2], 'data', True)
-#
-#     except:
-#         print('нет счетчика задач, задач тоже нет')
-#
-#     # Проверяем содержимое файла...
-#     #read_data(filters_npa[1][t], table_data)
-#
-# def get_data(driver):
-#     types_of_tasks = []
-#     task_id=[]
-#     summary=[]
-#     assignee=[]
-#     assigned = []
-#     statuses, priority = [], []
-#     qa_assigned = []
-#     qa = []
-#     result = []
-#     print('Функция запустилась!')
-#     try:
-#         types_of_tasks = driver.find_elements_by_class_name('issuetype')
-#         types_of_tasks = [x.find_element_by_tag_name('img').get_attribute('alt') for x in types_of_tasks]
-#
-#         task_id = driver.find_elements_by_class_name('issuekey')
-#         task_id = [x.find_element_by_tag_name('a').text for x in task_id]
-#
-#         summary = driver.find_elements_by_class_name('summary')
-#         summary = [x.find_element_by_tag_name('p').text for x in summary]
-#
-#         statuses = driver.find_elements_by_class_name('status')
-#         statuses = [x.find_element_by_tag_name('span').text for x in statuses]
-#
-#         priority = driver.find_elements_by_class_name('priority')
-#         priority = [x.find_element_by_tag_name('img').get_attribute('alt') for x in priority]
-#
-#         assignee = driver.find_elements_by_class_name('assignee')
-#         qa_assigned = driver.find_elements_by_css_selector('.customfield_10201')
-#         sprint = driver.find_elements_by_class_name('fixVersions')
-#         sprint = [x.text for x in sprint]
-#         print(len(sprint))
-#
-#         for u in range(len(assignee)):
-#             try:
-#                 assigned.append(assignee[u].find_element_by_css_selector(' span a').text)
-#             except:
-#                 assigned.append(assignee[u].find_element_by_tag_name('em').text)
-#             try:
-#                 qa.append(qa_assigned[u].find_element_by_css_selector('span a').text)
-#             except:
-#                 qa.append('Не назначен')
-#
-#             assignee[u] = assigned[u]
-#             qa_assigned[u] = qa[u]
-#         temp_str = ''
-#
-#         for r in range(len(types_of_tasks)):
-#             temp_str = f'{task_id[r]}|{types_of_tasks[r]}|{statuses[r]}|{priority[r]}|{summary[r]}|{assignee[r]}|{qa_assigned[r]}|{sprint[r]}'.split(';')
-#             result.append(temp_str)
-#         print(result[0])
-#         return result
-#     except:
-#         print('Задач нет')
-#         return ''
-# # Переписать функцию, чтобы писала сразу в excel для каждой вкладки свои данные
-# def write_data(data, path, trigger='headers', end = False):
-#     # в случае trigger = 'headers' в файл записывается строчка с заголовками столбцов
-#     # в случае trigger = 'data' в файл записываются данные с задачами
-#     with open(path, "a", newline='') as csv_file:
-#         writer = csv.writer(csv_file, delimiter=';')
-#
-#         if trigger=='headers':
-#             writer.writerow('№ в Jira|Тип задачи|Статус|Приоритет|Тема|Исполнитель|Тестировщик|Sprint'.split(';'))
-#
-#         if trigger == 'data':
-#             for line in data:
-#                 writer.writerow(line)
-#         if end:
-#             csv_file.close()
+
