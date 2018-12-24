@@ -1,4 +1,7 @@
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from time import sleep
 import pytest
@@ -11,6 +14,7 @@ from openpyxl.styles import Font, PatternFill, Border, Side
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formatting.rule import Rule
 from test_pyxl_lib import style_range
+import datetime
 
 
 @pytest.fixture
@@ -26,52 +30,96 @@ def driver(request):
 def cr_file_xls(filename):
    wb = Workbook()
    ws1=wb.active
-   ws1.title = "TEST"
+   ws1.title = "Список"
    wb.save(filename = filename)
-   return filename
+   return [filename, ws1.title]
 
 def login(driver):
     with open('login_data.txt', 'r', encoding='utf-8') as ld:
-        login_data = ld.readline().split(',')
-        print(login_data)
+        strings = ld.readlines()
+        #print(strings)
+        login_data = strings[0].split(',')
+        proj_data = []
+        for project in range(1, len(strings)):
+            print(range(1, len(strings)), len(strings))
+            proj_data.append(strings[project].split(','))
+
+        #print(strings)
+        #print(login_data)
     #login
     driver.get('http://jira.it2g.ru/login.jsp')
     driver.find_element_by_id('login-form-username').send_keys(login_data[0])
     driver.find_element_by_id('login-form-password').send_keys(login_data[1])
     driver.find_element_by_id('login-form-submit').click()
-    return login_data[2]
+    #print(proj_data)
+    return proj_data
 
-# Функция возвращает массив задач по фильтру Готово к тестированию
-def get_tasks_list(driver, filter_id, sprint):
-    # Открываем фильтр Готово к тестированию
+# Функция возвращает массив задач по фильтру filter_id
+def get_tasks_list(driver, filter_id, sprint, mode = 'proj_status'):
+    # Открываем фильтр по его айди
     driver.get(f'http://jira.it2g.ru/issues/?filter={filter_id}')
-    issues = driver.find_elements_by_class_name('issue-link')
-    issues = [x.text for x in issues]
-    issues = list(filter(lambda x: x!='', issues))
-    issues = [issues[x] for x in range(0, len(issues), 2)]
-    versions = driver.find_elements_by_class_name('fixVersions')
-    versions = [x.text for x in versions]
-    print(versions)
+    wait = WebDriverWait(driver, 5)
+    quantity_of_tasks, tasks_on_page = 0,0
+    try:
+        wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'issue-link')))
+        quantity_of_tasks = int(driver.find_element_by_class_name('results-count-total').text)
+        tasks_on_page = int(driver.find_element_by_class_name('results-count-end').text)
+    except:
 
-    correct_iss = []
-    # Вычислить номер следующего релиза
-    next_release = sprint.split(',')
-    # correct_sprints = []
-    # correct_sprints = [correct_sprints.append(x) for next_release[x] in range(1, len(next_release))]
-    next_release = next_release[0]
-    next_r_num = next_release[-1]
-    next_release = 'Release ' + str(int(next_r_num) + 1)
-    print("Следующий релиз: " + next_release)
+        try:
+            wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'issue-link')))
+            quantity_of_tasks = int(driver.find_element_by_class_name('results-count-total').text)
+            tasks_on_page = int(driver.find_element_by_class_name('results-count-end').text)
+        except:
+            print("Нет задач")
+            return ''
 
-    # Проверка версии у задачи перед записью в файл
-    for y in range(len(issues)):
-        if next_release not in versions[y] or ('Sprint 2' not in versions[y] or 'Sprint 3' not in versions[y]):
-            correct_iss.append(issues[y])
-        else:
-            print(f'Задача с релизом {next_release}: ' + issues[y])
-            
-    #print(correct_iss)
-    return correct_iss
+
+    #print(str(tasks_on_page) + ' из ' + str(quantity_of_tasks))
+
+    correct_iss, temp_iss = [], []
+    while (quantity_of_tasks >= tasks_on_page):
+        wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'issue-link')))
+        issues = driver.find_elements_by_class_name('issue-link')
+        try:
+            issues = [x.text for x in issues]
+        except:
+            issues = driver.find_elements_by_class_name('issue-link')
+            issues = [x.text for x in issues]
+        issues = list(filter(lambda x: x!='', issues))
+        issues = [issues[x] for x in range(0, len(issues), 2)]
+        temp_iss += issues
+        try:
+            driver.find_element_by_class_name('icon-next').click()
+        except:
+            tasks_on_page+=quantity_of_tasks
+            print('последняя страница')
+
+    if mode == 'proj_status':
+        versions = driver.find_elements_by_class_name('fixVersions')
+        versions = [x.text for x in versions]
+        # Вычислить номер следующего релиза
+        next_release = sprint.split(',')
+        # correct_sprints = []
+        # correct_sprints = [correct_sprints.append(x) for next_release[x] in range(1, len(next_release))]
+        next_release = next_release[0]
+        next_r_num = next_release[-1]
+        print(next_release)
+        next_release = 'Release ' + str(int(next_r_num) + 1)
+        print("Следующий релиз: " + next_release)
+        # Проверка версии у задачи перед записью в файл
+        for y in range(len(temp_iss)):
+            if next_release not in versions[y]: #or ('Sprint 2' not in versions[y] or 'Sprint 3' not in versions[y]):
+                correct_iss.append(temp_iss[y])
+            else:
+                print(f'Задача с релизом {next_release}: ' + temp_iss[y])
+        return correct_iss
+    else:
+        # print(correct_iss)
+        correct_iss = temp_iss
+        return correct_iss
+    #print(issues, versions)
+
 # Масссив для быстрой отладки скрипта для вкладки тестирование
 # test_arr = ['NPA-1219', 'NPA-1429']
 
