@@ -65,8 +65,14 @@ def get_tasks_list(driver, filter_id, sprint, mode = 'proj_status'):
         quantity_of_tasks = int(driver.find_element_by_class_name('results-count-total').text)
         tasks_on_page = int(driver.find_element_by_class_name('results-count-end').text)
     except:
-        print("Нет задач")
-        return ''
+
+        try:
+            wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'issue-link')))
+            quantity_of_tasks = int(driver.find_element_by_class_name('results-count-total').text)
+            tasks_on_page = int(driver.find_element_by_class_name('results-count-end').text)
+        except:
+            print("Нет задач")
+            return ''
 
 
     #print(str(tasks_on_page) + ' из ' + str(quantity_of_tasks))

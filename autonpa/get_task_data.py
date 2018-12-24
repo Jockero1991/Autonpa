@@ -66,9 +66,9 @@ mode = ['proj_status', 'bugs']
 
 
 # Необходимые доработки:
-# отцентровать значения в объединенных ячейках due_date: 05.12.18
+# устранить убогое отображение задач для кейса, когда нет задач в аналитике/разработке/тестировании
 # убрать пустую строчку, если в аналитике или в разработке нет задач
-# настроить выполнение файла в зависимости от мода.
+
 
 
 def test_new_main(driver):
@@ -82,19 +82,19 @@ def test_new_main(driver):
         all_issues=[]
         counter = 0
         if 'bugs' in pr_data[r]:
-            #pass
-            fn = gtb.cr_file_xls("data\\" + "Список дефектов ИС УСД ПМ " + str(datetime.date.today()) + ".xlsx")
-            print(fn)
-            page = fn[1]
-            fn = fn[0]
-            filters_ids=[pr_data[r][x] for x in range(2, len(pr_data[r]))]
-            print(filters_ids)
-            all_issues = gtb.get_tasks_list(driver, filters_ids[0],'','bugs')
-            print(all_issues)
-            for y in range(len(all_issues)):
-                print(all_issues[y])
-                task_details = gtid.dev_tsk_data(driver, all_issues[y], 'bugs')
-                counter = gtid.write_to_xls(task_details, fn, page, counter, 'bugs')
+            pass # это комментировать когда запускаем отчет по багам и убирать комментирование с блока внизу.
+            # fn = gtb.cr_file_xls("data\\" + "Список дефектов ИС УСД ПМ " + str(datetime.date.today()) + ".xlsx")
+            # print(fn)
+            # page = fn[1]
+            # fn = fn[0]
+            # filters_ids=[pr_data[r][x] for x in range(2, len(pr_data[r]))]
+            # print(filters_ids)
+            # all_issues = gtb.get_tasks_list(driver, filters_ids[0],'','bugs')
+            # print(all_issues)
+            # for y in range(len(all_issues)):
+            #     print(all_issues[y])
+            #     task_details = gtid.dev_tsk_data(driver, all_issues[y], 'bugs')
+            #     counter = gtid.write_to_xls(task_details, fn, page, counter, 'bugs')
         else:
             if 'proj_status' in pr_data[r]:
                 fn = gtb.cr_file_xls("data\\" + pr_data[r][0] + "_Отчет за " + str(datetime.date.today()) + ".xlsx")

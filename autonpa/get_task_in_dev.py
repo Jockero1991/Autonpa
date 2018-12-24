@@ -11,7 +11,7 @@ from openpyxl import load_workbook as lw
 from openpyxl import Workbook
 from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
-from openpyxl.styles import Font, PatternFill, Border, Side
+from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
 from openpyxl.worksheet.dimensions import ColumnDimension as cd
 from test_pyxl_lib import pyxl
 import get_feature_bugs as gtb
@@ -67,6 +67,8 @@ def dev_tsk_data(driver, issue, mode='proj_status'):
     if mode == 'proj_status':
         # Приоритет
         task_res.append(str(driver.find_element_by_id('priority-val').text))
+        # Статус
+        task_res.append(str(driver.find_element_by_id('status-val').text))
         # Исполнитель
         task_res.append(str(driver.find_element_by_id('assignee-val').text))
     # Тип задачи
@@ -92,6 +94,7 @@ def write_to_xls(task, df, page_name, lr=0, mode='proj_status'):
                     bottom = Side(border_style = 'thin', color = 'FF000000'))
 
     font = Font(bold=True)
+    al = Alignment(horizontal="center", vertical="center")
 
     wb = lw(df)
     ws1 = wb[page_name]
@@ -113,7 +116,7 @@ def write_to_xls(task, df, page_name, lr=0, mode='proj_status'):
             'Тема:',
             '№ задачи Jira',
             'Приоритет',
-
+            'Статус',
             'Исполнитель',
             'Комментарий'
         ]
@@ -129,6 +132,12 @@ def write_to_xls(task, df, page_name, lr=0, mode='proj_status'):
         if lr == 0:
             for col in range(0, len(headers)):
                 _ = ws1.cell(column=col+1, row=row, value=headers[col])
+                if col == 0:
+                    starts = f'{get_column_letter(col+1)}{lr+1}'
+                    ends = f'{get_column_letter(col+1)}{lr+1}'
+                    temprang = f'{starts}:{ends}'
+                    gtb.style_range(ws1, temprang, border=border, font=font, alignment=al)
+
                 starts = f'{get_column_letter(col+1)}{lr+1}'
                 ends = f'{get_column_letter(len(headers))}{row}'
                 rang = f'{starts}:{ends}'
@@ -143,7 +152,7 @@ def write_to_xls(task, df, page_name, lr=0, mode='proj_status'):
             ends = f'{get_column_letter(len(headers))}{row+1}'
             rang = f'{starts}:{ends}'
             print(rang)
-            gtb.style_range(ws1, rang, border=border, font=font)
+            gtb.style_range(ws1, rang, border=border, font=font, alignment=al)
 
             ws1.merge_cells(rang)
             wb.save(filename = df)
