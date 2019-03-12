@@ -176,6 +176,7 @@ with open('conn.txt', "r") as conf:
     user_name = all_data[1].split(',')[0].strip("'")
     password = all_data[1].split(',')[1].strip("' \n'")
     db_conn = all_data[3].strip("' \n'")
+    print('pass: ' + password)
     conf.close()
 
 # Выпадающие списки
@@ -186,9 +187,6 @@ dd_list = [
 '//*[@id="status-project__result"]', # Статус
 '//*[@id="aproval-form__result"]', # Формат утверждения
 '//*[@id="review-type__result"]', # Тип рассмотрения
-'//*[@id="__result"][1]', # Организация для первой добавленной записи
-'//*[@id="__result"][2]', # Должность для первой добавленной записи
-'//*[@id="__result"][3]' # ФИО для первой добавленной записи.
 ]
 
 requisites = ['//*[@id="__list"]/div[1]']
@@ -338,7 +336,7 @@ def exit_browser(driver):
 # Возвращает список пройденных и непройденных тестов
 
 scenario_1 = [
-[1, 'page', 'http://npa-tst.it2g.ru/main/dashboard'], #открыть страницу [тип элемента, url]
+[1, 'page', 'http://isusdpm-internal.it2g.ru/main/dashboard'], #открыть страницу [тип элемента, url]
 [2, 'oib', user_name, password], #login
 [3, 'new_pack', 0, 0], # инициировать создание пакета первым способом с первым значением.
 [4, 'button', 'save', '//*[@id="save-button"]'], # Нажать Сохранить с пустыми обязательными полями
@@ -360,7 +358,7 @@ scenario_1 = [
 ]
 
 scenario_2 = [ # создание пакета с 3-мя обязательными полями: Тип проекта, Статус, Наименование
-    [0, 'page', 'http://npa-tst.it2g.ru/main/dashboard'],
+    [0, 'page', 'http://isusdpm-internal.it2g.ru/main/dashboard'],
     [1, 'oib', user_name, password], # вводим логин и пароль
     [2, 'new_pack', 0, 0], # инициируем создание пакета.
     [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
@@ -373,7 +371,7 @@ scenario_2 = [ # создание пакета с 3-мя обязательны�
 ]
 
 scenario_3 = [ # создание пакета с 3-мя обязательными полями: Тип проекта, Статус, Наименование
-    [0, 'page', 'http://npa-tst.it2g.ru/main/dashboard'],
+    [0, 'page', 'http://isusdpm-internal.it2g.ru/main/dashboard'],
     [1, 'oib', user_name, password], # вводим логин и пароль
     [2, 'new_pack', 0, 0], # инициируем создание пакета.
     [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
@@ -392,7 +390,7 @@ scenario_3 = [ # создание пакета с 3-мя обязательны�
     ] 
 
 scenario_4=[
-    [0, 'page', 'http://npa-dev.it2g.ru/main/dashboard'],
+    [0, 'page', 'http://isusdpm-internal.it2g.ru/main/dashboard'],
     [1, 'oib', user_name, password], # вводим логин и пароль
     [2, 'new_pack', 0, 0], # инициируем создание пакета.
     [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
@@ -414,10 +412,10 @@ scenario_4=[
 ]
 
 scenario_5 = [ # создание пакета с 3-мя обязательными полями: Тип проекта, Статус, Наименование
-    [0, 'page', 'http://npa-tst.it2g.ru/main/dashboard'],
+    [0, 'page', 'http://isusdpm-internal.it2g.ru/main/dashboard'],
     [1, 'oib', user_name, password], # вводим логин и пароль
     [2, 'new_pack', 0, 0], # инициируем создание пакета.
-    [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта
+    [3, 'dropdown', dd_list[0], types_proj[0], s_spravoch[1][0]], # заполняем тип прокта -- вот тут ошибка падает.
     [4, 'dropdown', dd_list[1], statuses[0], s_spravoch[2][0]],  # заполняем статус
     [5, 'text', '//*[@id="name"]', 'Постановление Правительства Москвы № 102390481'], # заполняем наименование
     [6, 'button', 'save', '//*[@id="save-button"]'], # нажимаем Сохранить
@@ -454,7 +452,7 @@ def negative(sc, cb=0):
                 wait.until(EC.element_to_be_clickable((By.ID, 's2id_user'))).click()
                 wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'select2-input'))).send_keys(sc[x][y+1])
                 wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'select2-result-label'))).click()
-                wait.until(EC.element_to_be_clickable((By.ID, 'password'))).send_keys('123456')
+                wait.until(EC.element_to_be_clickable((By.ID, 'password'))).send_keys(password)
                 wait.until(EC.element_to_be_clickable((By.ID, 'id1'))).click()
 
             if sc[x][y] == 'page':
