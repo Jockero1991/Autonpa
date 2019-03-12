@@ -96,24 +96,26 @@ def get_tasks_list(driver, filter_id, sprint, mode = 'proj_status'):
             print('последняя страница')
 
     if mode == 'proj_status':
-        versions = driver.find_elements_by_class_name('fixVersions')
-        versions = [x.text for x in versions]
-        # Вычислить номер следующего релиза
-        next_release = sprint.split(',')
-        # correct_sprints = []
-        # correct_sprints = [correct_sprints.append(x) for next_release[x] in range(1, len(next_release))]
-        next_release = next_release[0]
-        next_r_num = next_release[-1]
-        print(next_release)
-        next_release = 'Release ' + str(int(next_r_num) + 1)
-        print("Следующий релиз: " + next_release)
-        # Проверка версии у задачи перед записью в файл
-        for y in range(len(temp_iss)):
-            if next_release not in versions[y]: #or ('Sprint 2' not in versions[y] or 'Sprint 3' not in versions[y]):
-                correct_iss.append(temp_iss[y])
-            else:
-                print(f'Задача с релизом {next_release}: ' + temp_iss[y])
+        correct_iss = temp_iss
         return correct_iss
+        # versions = driver.find_elements_by_class_name('fixVersions')
+        # versions = [x.text for x in versions]
+        # # Вычислить номер следующего релиза
+        # next_release = sprint.split(',')
+        # # correct_sprints = []
+        # # correct_sprints = [correct_sprints.append(x) for next_release[x] in range(1, len(next_release))]
+        # next_release = next_release[0]
+        # next_r_num = next_release[-1]
+        # print(next_release)
+        # next_release = 'Release ' + str(int(next_r_num) + 1)
+        # print("Следующий релиз: " + next_release)
+        # # Проверка версии у задачи перед записью в файл
+        # for y in range(len(temp_iss)):
+        #     if next_release not in versions[y]: #or ('Sprint 2' not in versions[y] or 'Sprint 3' not in versions[y]):
+        #         correct_iss.append(temp_iss[y])
+        #     else:
+        #         print(f'Задача с релизом {next_release}: ' + temp_iss[y])
+        # return correct_iss
     else:
         # print(correct_iss)
         correct_iss = temp_iss

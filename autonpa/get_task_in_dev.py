@@ -102,9 +102,9 @@ def write_to_xls(task, df, page_name, lr=0, mode='proj_status'):
 
     if mode == 'bugs':
         headers = [
-            'Тема:',
+            'Описание:',
             '№ задачи Jira',
-            'Статус',
+            'Статус в Jira',
             'Приоритет',
             'Релиз'
         ]
@@ -113,8 +113,8 @@ def write_to_xls(task, df, page_name, lr=0, mode='proj_status'):
 
     if mode == 'proj_status':
         headers = [
-            'Тема:',
-            '№ задачи Jira',
+            'Описание:',
+            '№ задачи',
             'Приоритет',
             'Статус',
             'Исполнитель',
